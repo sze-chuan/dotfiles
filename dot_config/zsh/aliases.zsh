@@ -19,10 +19,13 @@ alias sshp='ssh -o PubkeyAuthentication=no'
 # alias cp='cp -i'
 # alias mv='mv -i'
 
-# List aliases
-# alias ll='ls -alF'
-# alias la='ls -A'
-# alias l='ls -CF'
+# List aliases - using eza
+alias ls='eza --icons --group-directories-first'
+alias ll='eza -l --icons --group-directories-first --git'
+alias la='eza -la --icons --group-directories-first --git'
+alias lt='eza --tree --level=2 --icons'
+alias lta='eza --tree --level=2 --icons -a'
+alias l='eza -1 --icons'
 
 # Git shortcuts (add your own)
 # alias gs='git status'
