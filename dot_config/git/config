@@ -1,0 +1,46 @@
+[credential "https://git.illumina.com"]
+	provider = github
+[user]
+	name = Sze Chuan
+	email = szechuan.lai@illumina.com
+[includeIf "gitdir:~/personal-repos/"]
+	path = config-personal
+[init]
+	defaultBranch = main
+[core]
+	autocrlf = input
+	excludesfile = ~/.gitignore
+[column]
+	ui = auto
+[branch]
+	sort = -committerdate
+[tag]
+	sort = version:refname
+[diff]
+	algorithm = histogram
+	colorMoved = plain
+	mnemonicPrefix = true
+	renames = true
+[push]
+	autoSetupRemote = true
+	followTags = true
+[fetch]
+	prune = true
+	pruneTags = true
+	all = true
+[help]
+	autocorrect = prompt
+[commit]
+	verbose = true
+[rerere]
+	enabled = true
+	autoupdate = true
+[rebase]
+	autoSquash = true
+	autoStash = true
+	updateRefs = true
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

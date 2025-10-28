@@ -1,0 +1,8 @@
+[credential]
+        helper =
+        helper = /usr/local/share/gcm-core/git-credential-manager
+
+[user]
+name = Sze Chuan
+email = sze.chuan@gmail.com
+
