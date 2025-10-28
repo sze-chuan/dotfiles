@@ -1,0 +1,15 @@
+{{- if eq .chezmoi.os "darwin" -}}
+# Work-specific aliases - Only loaded on MacOS
+# These aliases are sourced in .zshrc
+
+# Docker/Development
+alias spd='docker run -p 127.0.0.1:5432:5432 -d --name postgres -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=db postgres'
+
+# Add your work-specific aliases below
+# Examples:
+# alias vpn='sudo openconnect your-vpn-server'
+# alias work-ssh='ssh your-work-server'
+# alias deploy-dev='kubectl config use-context dev && kubectl apply -f'
+# alias logs-prod='kubectl logs -f deployment/app -n production'
+
+{{ end -}}

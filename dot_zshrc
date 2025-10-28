@@ -21,13 +21,8 @@ antidote load
 eval "$(mise activate bash)"
 eval "$(mise activate zsh)"
 
-# General alias
-alias reload!='. ~/.zshrc'
-alias cls='clear' # Good 'ol Clear Screen command
-alias ld='lazydocker'
-alias sshp='ssh -o PubkeyAuthentication=no '
-
-# EOS alias
-alias spd='docker run -p 127.0.0.1:5432:5432 -d --name postgres -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=db postgres'
+# Source alias files
+[[ -f "$XDG_CONFIG_HOME/zsh/aliases.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/aliases.zsh"
+[[ -f "$XDG_CONFIG_HOME/zsh/work-aliases.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/work-aliases.zsh"
 
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
