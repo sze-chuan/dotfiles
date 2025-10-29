@@ -21,8 +21,9 @@ antidote load
 eval "$(mise activate bash)"
 eval "$(mise activate zsh)"
 
-# Source alias files
+# Source alias and function files
 [[ -f "$XDG_CONFIG_HOME/zsh/aliases.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/aliases.zsh"
 [[ -f "$XDG_CONFIG_HOME/zsh/work-aliases.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/work-aliases.zsh"
+[[ -f "$XDG_CONFIG_HOME/zsh/functions.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/functions.zsh"
 
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
