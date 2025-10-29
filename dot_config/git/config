@@ -5,6 +5,8 @@
 	email = szechuan.lai@illumina.com
 [includeIf "gitdir:~/personal-repos/"]
 	path = config-personal
+[includeIf "gitdir:~/.local/share/chezmoi/"]
+	path = config-personal
 [init]
 	defaultBranch = main
 [core]
