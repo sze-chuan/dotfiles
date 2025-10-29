@@ -1,5 +1,4 @@
-{{- if eq .chezmoi.os "darwin" -}}
-# Work-specific aliases - Only loaded on MacOS
+# Work-specific aliases - Used on both MacOS and Linux
 # These aliases are sourced in .zshrc
 
 # Docker/Development
@@ -12,4 +11,3 @@ alias spd='docker run -p 127.0.0.1:5432:5432 -d --name postgres -e POSTGRES_USER
 # alias deploy-dev='kubectl config use-context dev && kubectl apply -f'
 # alias logs-prod='kubectl logs -f deployment/app -n production'
 
-{{ end -}}
