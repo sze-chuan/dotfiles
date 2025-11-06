@@ -90,3 +90,33 @@ cfs() {
 
 # Add your work-specific functions below
 
+# Grep lines containing service name from input file to output file
+grepl() {
+    if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
+        echo "Usage: grepl <service_name> <input_file> <output_file>"
+        echo "Example: grepl myservice input.log output.log"
+        return 1
+    fi
+
+    local service_name="$1"
+    local input_file="$2"
+    local output_file="$3"
+
+    # Validate input file exists
+    if [ ! -f "$input_file" ]; then
+        echo "Error: Input file '$input_file' does not exist"
+        return 1
+    fi
+
+    # Execute awk command
+    awk "/^.*${service_name}/" "$input_file" > "$output_file"
+    local exit_code=$?
+
+    if [ $exit_code -eq 0 ]; then
+        echo "Filtered lines containing '${service_name}' from ${input_file} to ${output_file}"
+    else
+        echo "Error: Command failed with exit code $exit_code"
+        return $exit_code
+    fi
+}
+
