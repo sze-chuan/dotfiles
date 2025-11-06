@@ -120,3 +120,52 @@ grepl() {
     fi
 }
 
+# Download CA certificate and add to OpenJDK certificate store
+add-ui-ca() {
+    if [ -z "$1" ]; then
+        echo "Usage: add-ui-ca <hostname>"
+        echo "Example: add-ui-ca myserver.example.com"
+        return 1
+    fi
+
+    local hostname="$1"
+    local cert_url="http://${hostname}/v1/instruments/public/ca/file"
+    local temp_cert="/tmp/ca_cert_${hostname}.crt"
+    local keystore="${HOME}/Library/Java/JavaVirtualMachines/openjdk-22.0.2/Contents/Home/lib/security/cacerts"
+    local alias="ca_${hostname}"
+
+    # Download CA certificate
+    echo "Downloading CA certificate from ${cert_url}..."
+    if ! curl -o "$temp_cert" "$cert_url"; then
+        echo "Error: Failed to download CA certificate from ${cert_url}"
+        return 1
+    fi
+
+    # Check if certificate was downloaded successfully
+    if [ ! -f "$temp_cert" ]; then
+        echo "Error: Certificate file not found at ${temp_cert}"
+        return 1
+    fi
+
+    # Check if keystore exists
+    if [ ! -f "$keystore" ]; then
+        echo "Error: Keystore not found at ${keystore}"
+        rm -f "$temp_cert"
+        return 1
+    fi
+
+    # Import certificate into keystore
+    echo "Importing certificate into OpenJDK keystore..."
+    if keytool -importcert -file "$temp_cert" -alias "$alias" -keystore "$keystore" \
+        -storepass changeit -noprompt; then
+        echo "Successfully imported CA certificate for ${hostname}"
+        # Cleanup temp file
+        rm -f "$temp_cert"
+        return 0
+    else
+        echo "Error: Failed to import certificate into keystore"
+        rm -f "$temp_cert"
+        return 1
+    fi
+}
+
