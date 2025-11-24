@@ -276,7 +276,7 @@ gwt-clone() {
 
     local repo_url="$1"
     local repo_name="${2:-$(basename -s .git "$repo_url")}"
-    local main_branch="${3:-main}"
+    local main_branch="${3}"
 
     # Check if directory already exists
     if [[ -d "$repo_name" ]]; then
@@ -298,8 +298,19 @@ gwt-clone() {
         return 1
     fi
 
-    # Configure bare repository
-    echo "gitdir: ./.bare" > "$repo_name/.git"
+    # Auto-detect default branch if not specified
+    if [[ -z "$main_branch" ]]; then
+        main_branch=$(git -C "$repo_name/.bare" symbolic-ref --short HEAD 2>/dev/null)
+        if [[ -z "$main_branch" ]]; then
+            # Fallback: try to detect from refs
+            main_branch=$(git -C "$repo_name/.bare" branch -a | grep -o 'HEAD -> [^/]*/\K.*' | head -1)
+        fi
+        if [[ -z "$main_branch" ]]; then
+            # Last resort: use 'main' as default
+            main_branch="main"
+        fi
+        echo "Detected default branch: $main_branch"
+    fi
 
     # Create main worktree
     echo "Creating main worktree..."
@@ -315,6 +326,7 @@ gwt-clone() {
         echo "  cd $repo_name/$main_branch"
     else
         echo "Error: Failed to create main worktree"
+        echo "Tip: Check if branch '$main_branch' exists with: git -C $repo_name/.bare branch -a"
         rm -rf "$repo_name"
         return 1
     fi
