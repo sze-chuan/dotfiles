@@ -314,7 +314,8 @@ gwt-clone() {
 
     # Create main worktree
     echo "Creating main worktree..."
-    git -C "$repo_name/.bare" worktree add "$repo_name/$main_branch" "$main_branch"
+    # Use ../ since we're running git from within .bare directory
+    git -C "$repo_name/.bare" worktree add "../$main_branch" "$main_branch"
 
     if [[ $? -eq 0 ]]; then
         echo
