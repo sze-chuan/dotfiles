@@ -224,13 +224,12 @@ gwt-list() {
 
 # Change to a worktree directory
 # Usage: gwt-cd <branch-name>
-# Note: This must be used with: cd $(gwt-cd <branch-name>)
 gwt-cd() {
     if [[ -z "$1" ]]; then
-        echo "Usage: cd \$(gwt-cd <branch-name>)"
+        echo "Usage: gwt-cd <branch-name>"
         echo
-        echo "Tip: Add this alias to make it easier:"
-        echo "  alias gcd='cd \$(gwt-cd)'"
+        echo "Example:"
+        echo "  gwt-cd feature-auth    # Switch to feature-auth worktree"
         return 1
     fi
 
@@ -258,7 +257,8 @@ gwt-cd() {
         return 1
     fi
 
-    echo "$target_worktree"
+    # Change to the target worktree
+    cd "$target_worktree" && echo "Switched to worktree: $branch_name"
 }
 
 # Clone a repository with worktree structure
@@ -347,7 +347,7 @@ COMMANDS:
   gwt-add <branch> [base]     Create new worktree
   gwt-rm <branch> [-d]        Remove worktree (optionally delete branch)
   gwt-list                    List all worktrees
-  gwt-cd <branch>             Get path to worktree (use with cd)
+  gwt-cd <branch>             Switch to a different worktree
   gwt-help                    Show this help
 
 WORKFLOW EXAMPLE:
@@ -357,14 +357,14 @@ WORKFLOW EXAMPLE:
 
   # Daily workflow
   gwt-add feature-auth        # Create feature branch worktree
-  cd ../feature-auth          # Work on feature
+  gwt-cd feature-auth         # Switch to feature worktree
 
   gwt-add pr-review main      # Need to review a PR? Create another worktree
-  cd ../pr-review             # Review code
+  gwt-cd pr-review            # Switch to PR review worktree
 
-  cd ../feature-auth          # Back to your work (no stashing needed!)
+  gwt-cd feature-auth         # Back to your work (no stashing needed!)
 
-  gwt-rm pr-review           # Done with review
+  gwt-rm pr-review            # Done with review
 
 DIRECTORY STRUCTURE:
   myrepo/
