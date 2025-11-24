@@ -22,11 +22,10 @@ gwt-init() {
     local repo_root=$(git rev-parse --show-toplevel)
     local repo_name=$(basename "$repo_root")
     local parent_dir=$(dirname "$repo_root")
-    local new_structure="$parent_dir/$repo_name"
 
     echo "Converting $repo_name to worktree structure..."
     echo "Current location: $repo_root"
-    echo "New structure: $new_structure/.bare/ + $new_structure/$main_branch/"
+    echo "New structure: $repo_root/.bare/ + $repo_root/$main_branch/"
     echo
     read -q "REPLY?Continue? (y/n) "
     echo
@@ -36,41 +35,61 @@ gwt-init() {
         return 1
     fi
 
-    # Create temporary backup
+    # Create temporary directory for building new structure
     local temp_dir=$(mktemp -d)
-    echo "Creating temporary backup..."
-    cp -r "$repo_root/.git" "$temp_dir/git-backup"
+    echo "Building new structure in temporary location..."
 
-    # Create new structure
-    mkdir -p "$new_structure"
+    # Copy .git to temp as .bare
+    cp -r "$repo_root/.git" "$temp_dir/.bare"
 
-    # Move .git to .bare and convert to bare repo
-    mv "$repo_root/.git" "$new_structure/.bare"
+    # Configure as bare repository
+    git -C "$temp_dir/.bare" config core.bare true
 
-    # Configure the bare repository
-    git -C "$new_structure/.bare" config core.bare true
+    # Remove the worktree configuration (if any) from the bare repo
+    rm -rf "$temp_dir/.bare/worktrees"
 
-    # Create main worktree
+    # Create main worktree in temp
     echo "Creating main worktree..."
-    git -C "$new_structure/.bare" worktree add "$new_structure/$main_branch" "$main_branch"
+    if ! git -C "$temp_dir/.bare" worktree add "$temp_dir/$main_branch" "$main_branch" 2>/dev/null; then
+        echo "Error: Failed to create main worktree"
+        rm -rf "$temp_dir"
+        return 1
+    fi
 
     # Copy working files to new main worktree
     echo "Copying files..."
-    rsync -a --exclude='.git' "$repo_root/" "$new_structure/$main_branch/"
+    rsync -a --exclude='.git' "$repo_root/" "$temp_dir/$main_branch/"
 
-    # Remove old directory
-    rm -rf "$repo_root"
+    # Now safely remove old .git and working files, keeping the directory structure
+    echo "Cleaning up old structure..."
+    rm -rf "$repo_root/.git"
 
-    # Clean up backup
+    # Remove all files and directories except hidden files/dirs we want to keep
+    # Use find to remove everything at depth 1 except .git (already removed)
+    find "$repo_root" -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+
+    # Move new structure into place
+    echo "Moving new structure into place..."
+    mv "$temp_dir/.bare" "$repo_root/"
+    mv "$temp_dir/$main_branch" "$repo_root/"
+
+    # Update worktree path in git config
+    # The worktree path in .bare/worktrees/<branch>/gitdir needs to be updated
+    local worktree_config="$repo_root/.bare/worktrees/$main_branch/gitdir"
+    if [[ -f "$worktree_config" ]]; then
+        echo "$repo_root/$main_branch/.git" > "$worktree_config"
+    fi
+
+    # Clean up temp directory
     rm -rf "$temp_dir"
 
     echo
     echo "✓ Conversion complete!"
-    echo "  Bare repo: $new_structure/.bare/"
-    echo "  Main worktree: $new_structure/$main_branch/"
+    echo "  Bare repo: $repo_root/.bare/"
+    echo "  Main worktree: $repo_root/$main_branch/"
     echo
     echo "Next steps:"
-    echo "  cd $new_structure/$main_branch"
+    echo "  cd $repo_root/$main_branch"
     echo "  gwt-add <branch-name>  # Create additional worktrees"
 }
 
