@@ -127,7 +127,7 @@ My dotfiles are managed with chezmoi and backed up to GitHub at `sze-chuan/dotfi
 Always push changes using chezmoi after file modifications:
 
 ```bash
-chezmoi re-add && cd $(chezmoi source-path) && git add . && git commit -m "Your commit message" && git push
+$(chezmoi source-path) && git add . && git commit -m "Your commit message" && git push && chezmoi apply
 ```
 
 This applies to:
