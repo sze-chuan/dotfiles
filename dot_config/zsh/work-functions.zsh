@@ -131,7 +131,7 @@ add-ui-ca() {
     local hostname="$1"
     local cert_url="http://${hostname}/v1/instruments/public/ca/file"
     local temp_cert="/tmp/ca_cert_${hostname}.crt"
-    local keystore="${HOME}/Library/Java/JavaVirtualMachines/openjdk-22.0.2/Contents/Home/lib/security/cacerts"
+    local keystore="${HOME}/.local/share/mise/installs/java/openjdk-17.0.2/Contents/Home/lib/security/cacerts"
     local alias="ca_${hostname}"
 
     # Download CA certificate
