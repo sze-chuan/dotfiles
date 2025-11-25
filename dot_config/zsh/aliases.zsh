@@ -21,3 +21,12 @@ alias la='eza -la --icons --group-directories-first --git'
 alias lt='eza --tree --level=2 --icons'
 alias lta='eza --tree --level=2 --icons -a'
 alias l='eza -1 --icons'
+
+# Git worktree shortcuts
+alias gwti='gwt-init'
+alias gwta='gwt-add'
+alias gwtrm='gwt-rm'
+alias gwtl='gwt-list'
+alias gwtcd='gwt-cd'
+alias gwtcl='gwt-clone'
+alias gwth='gwt-help'
