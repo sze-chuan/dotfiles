@@ -1,0 +1,19 @@
+{{- if eq .chezmoi.os "darwin" -}}
+# Ghostty Configuration (macOS only)
+
+# Split terminal keybindings
+keybind = super+shift+o=new_split:right
+keybind = super+shift+e=new_split:down
+
+# Navigate between splits
+keybind = super+alt+left=goto_split:left
+keybind = super+alt+right=goto_split:right
+keybind = super+alt+up=goto_split:top
+keybind = super+alt+down=goto_split:bottom
+
+# Resize splits
+keybind = super+shift+ctrl+left=resize_split:left,10
+keybind = super+shift+ctrl+right=resize_split:right,10
+keybind = super+shift+ctrl+up=resize_split:up,10
+keybind = super+shift+ctrl+down=resize_split:down,10
+{{- end -}}
