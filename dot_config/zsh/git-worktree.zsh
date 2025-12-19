@@ -148,22 +148,22 @@ gwt-add() {
 # Usage: gwt-rm <branch-name> [-d] [--force]
 gwt-rm() {
     if [[ -z "$1" ]]; then
-        echo "Usage: gwt-rm <branch-name> [-d] [--force]"
+        echo "Usage: gwt-rm <branch-name> [-d]"
         echo
         echo "Options:"
         echo "  -d        Also delete the branch"
-        echo "  --force   Force removal even with uncommitted changes"
+        echo
+        echo "Note: Worktrees are force-removed by default (allows uncommitted changes)"
         echo
         echo "Examples:"
-        echo "  gwt-rm feature-auth         # Remove worktree only"
+        echo "  gwt-rm feature-auth         # Remove worktree (force by default)"
         echo "  gwt-rm feature-auth -d      # Remove worktree and delete branch"
-        echo "  gwt-rm feature-auth --force # Force remove worktree"
         return 1
     fi
 
     local branch_name="$1"
     local delete_branch=false
-    local force_remove=false
+    local force_remove=true  # Force by default
 
     # Parse options (can appear in any order after branch name)
     shift
@@ -367,9 +367,8 @@ COMMANDS:
   gwt-init [branch]           Convert existing repo to worktree structure
   gwt-clone <url> [dir]       Clone repo with worktree structure
   gwt-add <branch> [base]     Create new worktree
-  gwt-rm <branch> [-d] [--force]
-                              Remove worktree (optionally delete branch)
-                              Use --force to remove with uncommitted changes
+  gwt-rm <branch> [-d]        Remove worktree (force by default)
+                              Optionally delete branch with -d
   gwt-list                    List all worktrees
   gwt-cd <branch>             Switch to a different worktree
   gwt-help                    Show this help
