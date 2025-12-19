@@ -145,26 +145,44 @@ gwt-add() {
 }
 
 # Remove a worktree
-# Usage: gwt-rm <branch-name> [-d]
+# Usage: gwt-rm <branch-name> [-d] [--force]
 gwt-rm() {
     if [[ -z "$1" ]]; then
-        echo "Usage: gwt-rm <branch-name> [-d]"
+        echo "Usage: gwt-rm <branch-name> [-d] [--force]"
         echo
         echo "Options:"
-        echo "  -d    Also delete the branch"
+        echo "  -d        Also delete the branch"
+        echo "  --force   Force removal even with uncommitted changes"
         echo
         echo "Examples:"
-        echo "  gwt-rm feature-auth      # Remove worktree only"
-        echo "  gwt-rm feature-auth -d   # Remove worktree and delete branch"
+        echo "  gwt-rm feature-auth         # Remove worktree only"
+        echo "  gwt-rm feature-auth -d      # Remove worktree and delete branch"
+        echo "  gwt-rm feature-auth --force # Force remove worktree"
         return 1
     fi
 
     local branch_name="$1"
     local delete_branch=false
+    local force_remove=false
 
-    if [[ "$2" == "-d" ]]; then
-        delete_branch=true
-    fi
+    # Parse options (can appear in any order after branch name)
+    shift
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -d)
+                delete_branch=true
+                shift
+                ;;
+            --force)
+                force_remove=true
+                shift
+                ;;
+            *)
+                echo "Error: Unknown option '$1'"
+                return 1
+                ;;
+        esac
+    done
 
     # Get the parent directory
     local current_worktree=$(git rev-parse --show-toplevel 2>/dev/null)
@@ -191,7 +209,11 @@ gwt-rm() {
 
     # Remove the worktree
     echo "Removing worktree: $worktree_path"
-    git worktree remove "$worktree_path"
+    if [[ "$force_remove" == true ]]; then
+        git worktree remove --force "$worktree_path"
+    else
+        git worktree remove "$worktree_path"
+    fi
 
     if [[ $? -eq 0 ]]; then
         echo "✓ Worktree removed"
@@ -345,7 +367,9 @@ COMMANDS:
   gwt-init [branch]           Convert existing repo to worktree structure
   gwt-clone <url> [dir]       Clone repo with worktree structure
   gwt-add <branch> [base]     Create new worktree
-  gwt-rm <branch> [-d]        Remove worktree (optionally delete branch)
+  gwt-rm <branch> [-d] [--force]
+                              Remove worktree (optionally delete branch)
+                              Use --force to remove with uncommitted changes
   gwt-list                    List all worktrees
   gwt-cd <branch>             Switch to a different worktree
   gwt-help                    Show this help
