@@ -123,16 +123,38 @@ grepl() {
 # Download CA certificate and add to OpenJDK certificate store
 add-ui-ca() {
     if [ -z "$1" ]; then
-        echo "Usage: add-ui-ca <hostname>"
-        echo "Example: add-ui-ca myserver.example.com"
+        echo "Usage: add-ui-ca <hostname> [java_version]"
+        echo "  hostname: The hostname to download CA certificate from"
+        echo "  java_version: Java SDK version (11 or 17, default: 17)"
+        echo ""
+        echo "Examples:"
+        echo "  add-ui-ca myserver.example.com"
+        echo "  add-ui-ca myserver.example.com 11"
+        echo "  add-ui-ca myserver.example.com 17"
         return 1
     fi
 
     local hostname="$1"
+    local java_version="${2:-17}"
     local cert_url="http://${hostname}/v1/instruments/public/ca/file"
     local temp_cert="/tmp/ca_cert_${hostname}.crt"
-    local keystore="${HOME}/.local/share/mise/installs/java/openjdk-17.0.2/Contents/Home/lib/security/cacerts"
+    local keystore=""
     local alias="ca_${hostname}"
+
+    # Determine keystore path based on Java version
+    case "$java_version" in
+        11)
+            keystore="${HOME}/.local/share/mise/installs/java/corretto-11/lib/security/cacerts"
+            ;;
+        17)
+            keystore="${HOME}/.local/share/mise/installs/java/openjdk-17/Contents/Home/lib/security/cacerts"
+            ;;
+        *)
+            echo "Error: Unsupported Java version '${java_version}'"
+            echo "Supported versions: 11, 17"
+            return 1
+            ;;
+    esac
 
     # Download CA certificate
     echo "Downloading CA certificate from ${cert_url}..."
