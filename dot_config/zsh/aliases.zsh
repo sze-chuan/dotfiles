@@ -14,6 +14,9 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 
+# Personal assistant
+alias jarvis='cd ~/jarvis && claude --dangerously-skip-permissions'
+
 # List aliases - using eza
 alias ls='eza --icons --group-directories-first'
 alias ll='eza -l --icons --group-directories-first --git'
