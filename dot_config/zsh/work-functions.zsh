@@ -176,6 +176,17 @@ add-ui-ca() {
         return 1
     fi
 
+    # Check if alias already exists and remove it
+    if keytool -list -alias "$alias" -keystore "$keystore" -storepass changeit &>/dev/null; then
+        echo "Alias '${alias}' already exists, removing it..."
+        if ! keytool -delete -alias "$alias" -keystore "$keystore" -storepass changeit; then
+            echo "Error: Failed to remove existing alias"
+            rm -f "$temp_cert"
+            return 1
+        fi
+        echo "Existing alias removed successfully"
+    fi
+
     # Import certificate into keystore
     echo "Importing certificate into OpenJDK keystore..."
     if keytool -importcert -file "$temp_cert" -alias "$alias" -keystore "$keystore" \
