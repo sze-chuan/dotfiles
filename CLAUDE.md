@@ -1,4 +1,4 @@
-# Claude MacOS/Linux System Configuration Assistant
+# MacOS/Linux System Configuration Assistant
 
 ## System Context
 
@@ -37,7 +37,7 @@ I am running a MacOS/Linux system and need help with configuration, setup, and a
    # Check if configuration already exists
    ls -la ~/.config/[application]/
    find ~ -name "*[application]*" -type f 2>/dev/null
-   
+
    # Look for example/default files
    find /usr/share -name "*[application]*" -type f 2>/dev/null
    find /etc -name "*[application]*" -type f 2>/dev/null
