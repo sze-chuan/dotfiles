@@ -202,6 +202,79 @@ add-ui-ca() {
     fi
 }
 
+# Connect local UI dev environment to a remote EdgeOS server
+connect-ui-dev() {
+    if [ -z "$1" ]; then
+        echo "Usage: connect-ui-dev <hostname>"
+        echo "  hostname: The EdgeOS server hostname (without .edgeos.illumina.com)"
+        echo ""
+        echo "This function will:"
+        echo "  1. Add the server's CA certificate to the Java keystore"
+        echo "  2. Fetch the Keycloak UI client secret from the server"
+        echo "  3. Update env.list in the current directory"
+        echo ""
+        echo "Example:"
+        echo "  connect-ui-dev myserver"
+        return 1
+    fi
+
+    local hostname="$1"
+    local fqdn="${hostname}.edgeos.illumina.com"
+    local env_file="./env.list"
+
+    # Check env.list exists in current directory
+    if [ ! -f "$env_file" ]; then
+        echo "Error: env.list not found in current directory"
+        return 1
+    fi
+
+    # Step 1: Add CA certificate
+    echo "Adding CA certificate for ${fqdn}..."
+    if ! add-ui-ca "$fqdn"; then
+        echo "Error: Failed to add CA certificate"
+        return 1
+    fi
+
+    # Step 2: Fetch Keycloak UI client secret from helm values
+    echo "Fetching Keycloak UI client secret from ${fqdn}..."
+    local client_secret
+    client_secret=$(ssh root@"${fqdn}" "helm get values edgeos" | \
+        yq '.keycloak_edgeos.secrets.keycloak.edgeos_ui_client_secret')
+
+    if [ -z "$client_secret" ] || [ "$client_secret" = "null" ]; then
+        echo "Error: Failed to retrieve Keycloak UI client secret"
+        return 1
+    fi
+
+    # Step 3: Update env.list
+    echo "Updating env.list..."
+
+    if grep -q "^EDGEOS_UI_BASE_URL=" "$env_file"; then
+        sed -i '' "s|^EDGEOS_UI_BASE_URL=.*|EDGEOS_UI_BASE_URL=https://${fqdn}|" "$env_file"
+    else
+        echo "EDGEOS_UI_BASE_URL=https://${fqdn}" >> "$env_file"
+    fi
+
+    if grep -q "^EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=" "$env_file"; then
+        sed -i '' "s|^EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=.*|EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=${client_secret}|" "$env_file"
+    else
+        echo "EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=${client_secret}" >> "$env_file"
+    fi
+
+    if grep -q "^EDGEOS_UI_IMS_BOOTSTRAPLOGIN_SECRET=" "$env_file"; then
+        sed -i '' "s|^EDGEOS_UI_IMS_BOOTSTRAPLOGIN_SECRET=.*|EDGEOS_UI_IMS_BOOTSTRAPLOGIN_SECRET=${client_secret}|" "$env_file"
+    else
+        echo "EDGEOS_UI_IMS_BOOTSTRAPLOGIN_SECRET=${client_secret}" >> "$env_file"
+    fi
+
+    echo ""
+    echo "Successfully configured UI dev environment for ${fqdn}"
+    echo "Updated env.list with:"
+    echo "  EDGEOS_UI_BASE_URL=https://${fqdn}"
+    echo "  EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=<secret>"
+    echo "  EDGEOS_UI_IMS_BOOTSTRAPLOGIN_SECRET=<secret>"
+}
+
 # Get Keycloak password from EdgeOS cluster
 get-kc-pw() {
     if [ -z "$1" ]; then
