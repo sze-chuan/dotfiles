@@ -229,7 +229,7 @@ connect-ui-dev() {
 
     # Step 1: Add CA certificate
     echo "Adding CA certificate for ${hostname}..."
-    if ! add-ui-ca "$fqdn"; then
+    if ! add-ui-ca "$hostname"; then
         echo "Error: Failed to add CA certificate"
         return 1
     fi
