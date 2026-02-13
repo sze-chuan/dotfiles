@@ -1,6 +1,6 @@
 ---
-name: writing-dotnet-integration-tests
-description: "Scaffolds and writes .NET integration tests using WebApplicationFactory, Testcontainers, WireMock, and xUnit. Use when creating integration test projects, writing integration tests, or setting up test infrastructure for ASP.NET Core APIs."
+name: setup-dotnet-integration-tests
+description: "Scaffolds .NET integration tests using WebApplicationFactory, Testcontainers, WireMock, and xUnit. Use when creating integration test projects or setting up test infrastructure for ASP.NET Core APIs."
 ---
 
 # Writing .NET Integration Tests
@@ -52,16 +52,11 @@ In `ConfigureWebHost`, replace dependencies in this order:
 1. **Remove hosted services** — prevent background services from starting
 2. **Register the module** — if conditionally compiled, call the module registration explicitly
 3. **Replace databases** — point DbContexts at Testcontainers, preserve production options (lazy loading, naming conventions, interceptors)
-4. **Add controller discovery** — `AddApplicationPart` for the module assembly
-5. **Override HTTP client URLs** — point all base URLs at WireMock
-6. **Configure auth** — symmetric key JWT with no issuer/audience/lifetime validation
-7. **Replace external service interfaces** — NSubstitute mocks for services not under test
-8. **Replace messaging** — mock event publishers to avoid native library dependencies (e.g., librdkafka)
-9. **Replace logging** — mock context loggers
+4. **Override HTTP client URLs** — point all base URLs at WireMock
+5. **Configure auth** — symmetric key JWT with no issuer/audience/lifetime validation
+6. **Replace external service interfaces** — NSubstitute mocks for services not under test
+7. **Replace messaging** — mock event publishers to avoid native library dependencies (e.g., librdkafka)
 
-### 5. Write tests
-
-Start with a smoke test that proves the module is loaded (expect 401, not 404), then add feature tests.
 
 ## Auth Patterns
 
@@ -113,25 +108,8 @@ services.AddSingleton<IJwtValidator>(_ => new JwtValidator(tokenValidationParame
 
 ## Common Pitfalls
 
-### Conditionally compiled modules (`#if EdgeOS`)
-The module won't load unless you explicitly register it and add its assembly via `AddApplicationPart`. Always write a smoke test first to catch this.
-
 ### Missing request body fields
 Endpoint `Request` models have `[Required]` attributes. Always check the model and include all required fields, or the test gets 400 instead of the expected status.
-
-### Native library dependencies (librdkafka)
-`IKafkaEventPublisher` loads `librdkafka` at runtime. Mock it in the factory. If the type is in an unreferenced DLL, use reflection:
-```csharp
-var type = AppDomain.CurrentDomain.GetAssemblies()
-    .SelectMany(a => a.GetTypes())
-    .FirstOrDefault(t => t.FullName == "Full.Type.Name");
-if (type != null)
-{
-    var descriptors = services.Where(d => d.ServiceType == type).ToList();
-    foreach (var d in descriptors) services.Remove(d);
-    services.AddSingleton(type, _ => Substitute.For([type], []));
-}
-```
 
 ### Database extensions (citext)
 If a DbContext uses PostgreSQL extensions like `citext`, run `CREATE EXTENSION IF NOT EXISTS citext;` on the test database **before** calling `EnsureCreated()`.
