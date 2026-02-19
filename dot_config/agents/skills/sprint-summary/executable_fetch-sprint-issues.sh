@@ -44,15 +44,12 @@ echo "Fetching issues for sprint: ${SPRINT_NAME}" >&2
 echo "JQL: ${JQL}" >&2
 
 while true; do
-  PAYLOAD=$(cat <<EOF
-{
-  "jql": "${JQL}",
-  "startAt": ${START_AT},
-  "maxResults": ${PAGE_SIZE},
-  "fields": ["key","summary","issuetype","status","priority","assignee","labels","issuelinks"]
-}
-EOF
-)
+  PAYLOAD=$(jq -n \
+    --arg jql "$JQL" \
+    --argjson startAt "$START_AT" \
+    --argjson maxResults "$PAGE_SIZE" \
+    '{jql: $jql, startAt: $startAt, maxResults: $maxResults, fields: ["key","summary","issuetype","status","priority","assignee","labels","issuelinks","customfield_10006"]}'
+  )
 
   HTTP_CODE=$(curl -s -w "%{http_code}" -o "$TMPFILE" \
     -X POST \
@@ -84,6 +81,33 @@ EOF
 
   START_AT=$FETCHED
 done
+
+# Resolve epic names from epic keys
+EPIC_KEYS=$(echo "$ALL_ISSUES" | jq -r '[.[].fields.customfield_10006 // empty] | unique | .[]')
+
+if [[ -n "$EPIC_KEYS" ]]; then
+  echo "Resolving epic names..." >&2
+  EPIC_JQL="key in ($(echo "$EPIC_KEYS" | paste -sd, -))"
+  EPIC_PAYLOAD=$(jq -n --arg jql "$EPIC_JQL" '{jql: $jql, maxResults: 100, fields: ["summary"]}')
+
+  HTTP_CODE=$(curl -s -w "%{http_code}" -o "$TMPFILE" \
+    -X POST \
+    -H "Authorization: Bearer ${JIRA_PAT}" \
+    -H "Content-Type: application/json" \
+    -d "$EPIC_PAYLOAD" \
+    "$SEARCH_URL")
+
+  if [[ "$HTTP_CODE" -ge 200 && "$HTTP_CODE" -lt 300 ]]; then
+    EPIC_MAP=$(jq '[.issues[] | {(.key): .fields.summary}] | add // {}' "$TMPFILE")
+    # Inject epicName into each issue based on its epic key
+    ALL_ISSUES=$(echo "$ALL_ISSUES" | jq --argjson epics "$EPIC_MAP" '
+      [.[] | .fields.epicName = (if .fields.customfield_10006 then $epics[.fields.customfield_10006] else null end)]
+    ')
+    echo "Resolved $(echo "$EPIC_MAP" | jq 'length') epic names." >&2
+  else
+    echo "Warning: Failed to resolve epic names (HTTP ${HTTP_CODE}), continuing without them." >&2
+  fi
+fi
 
 echo "Done. ${TOTAL} issues fetched." >&2
 echo "$ALL_ISSUES"

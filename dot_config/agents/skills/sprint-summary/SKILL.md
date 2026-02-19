@@ -49,11 +49,7 @@ For each issue, extract:
 - `fields.assignee.displayName` — who is assigned
 - `fields.labels` — labels array
 - `fields.issuelinks` — linked issues (look for blocking relationships)
-
-**Identify focus items** — issues that need attention:
-- Blocked issues: `issuelinks` entries where `type.name` is "Blocks" and the issue is the inward (blocked) side
-- High priority: `priority.name` is "High" or "Highest"
-- In testing/review: `status.name` contains "Test", "Review", or "QA"
+- `fields.epicName` — resolved epic name (injected by fetch script from `customfield_10006`)
 
 ### 4. Draft the summary
 
@@ -67,29 +63,36 @@ Hi UI Ninjas, here's a heads up on the upcoming sprint next week.
 ## Overview
 
 ### Features
-- <ISSUE-KEY> <summary>
+- <Epic name>
+- <Epic name>
+- <ISSUE-KEY> <summary> (only for issues without an epic)
 
 ### Bugs and tech improvements
 - <ISSUE-KEY> <summary>
 
 ## Focus
-- <Auto-drafted bullet points from high-priority, blocked, or in-testing items with brief context>
+- *[User-provided]*
 
 ## Notes and thoughts
-- <Placeholder for user content>
+- *[User-provided]*
 ```
 
-Guidelines:
-- List issues as `<KEY> <summary>` — keep it scannable
-- In the Focus section, explain *why* each item needs attention (e.g., "blocked by EDGEOS-999", "high priority", "currently in QA")
-- Leave the Notes section with placeholder bullets for the user to fill in
+Guidelines for Features:
+- If an issue has an `epicName`, display the epic name only (not the ticket key). Deduplicate — each epic appears once even if multiple issues share it.
+- If an issue has no epic, fall back to `<KEY> <summary>`.
+- List epics first, then individual tickets without epics.
+
+Guidelines for Bugs and tech improvements:
+- List as `<KEY> <summary>` — keep it scannable.
+
+Focus and Notes sections:
+- Leave as placeholders for the user to fill in. Do not auto-generate focus items.
 
 ### 5. Ask user for notes
 
 Present the draft to the user and ask:
-- Any notes or thoughts to include in the "Notes and thoughts" section?
-- Any items to add, remove, or re-prioritise in the Focus section?
-- Any other changes?
+- Any items to add, remove, or change?
+- Content for the Focus and Notes sections?
 
 ### 6. Present final summary
 
