@@ -21,7 +21,6 @@ Look for a PR template in the repo root:
 ```
 .github/pull_request_template.md
 .github/PULL_REQUEST_TEMPLATE.md
-docs/pull_request_template.md
 ```
 
 If no template is found, use a minimal default:
@@ -30,7 +29,6 @@ If no template is found, use a minimal default:
 
 ## Changes
 
-## Test plan
 ```
 
 ### 3. Populate the template
@@ -38,7 +36,6 @@ If no template is found, use a minimal default:
 Fill in the template sections using the commit history and diff stats:
 - **Summary**: 1–3 bullet points describing *why* these changes were made (not just what files changed)
 - **Changes** (if the template has it): What was added, modified, or removed
-- **Test plan** (if the template has it): How the changes were verified or what should be tested
 
 Do not invent content — only summarise what is visible in the commits and diff.
 
@@ -53,7 +50,7 @@ git push -u origin <branch-name>
 
 Use `gh pr create` with:
 - `--draft` flag (always create as draft unless the user explicitly says otherwise)
-- `--title`: concise imperative title derived from the branch/commits (under 70 chars)
+- `--title`: use `EDGEOS-<ticket-number> <brief description>`. `<ticket number>` can be referenced from branch name 
 - `--body`: the populated template passed via a HEREDOC
 
 ```bash
