@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Fetch all issues for a Jira sprint via REST API.
-# Usage: fetch-sprint-issues.sh "Sprint 26.1.4"
+# Usage: fetch-sprint-issues.sh "26.1.4"  (resolves to full sprint name via board API)
+#        fetch-sprint-issues.sh "EdgeOS 26.1.4 (02/16-02/27)"  (uses as-is)
 #
 # Environment variables:
 #   JIRA_PAT       (required) — Personal Access Token for Bearer auth
@@ -16,10 +17,10 @@ JIRA_BASE_URL="${JIRA_BASE_URL:-https://jira.illumina.com}"
 JIRA_BOARD_ID="${JIRA_BOARD_ID:-4329}"
 JIRA_TEAM_ID="${JIRA_TEAM_ID:-317}"
 
-SPRINT_NAME="${1:-}"
-if [[ -z "$SPRINT_NAME" ]]; then
+SPRINT_INPUT="${1:-}"
+if [[ -z "$SPRINT_INPUT" ]]; then
   echo "Usage: $(basename "$0") <sprint-name>" >&2
-  echo "Example: $(basename "$0") \"Sprint 26.1.4\"" >&2
+  echo "Example: $(basename "$0") \"26.1.4\"" >&2
   exit 1
 fi
 
@@ -31,6 +32,30 @@ fi
 
 TMPFILE=$(mktemp)
 trap 'rm -f "$TMPFILE"' EXIT
+
+# Resolve short sprint name (e.g. "26.1.4") to full name via board API
+SPRINT_NAME="$SPRINT_INPUT"
+if [[ "$SPRINT_INPUT" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "Resolving sprint name for: ${SPRINT_INPUT}" >&2
+  SPRINTS_URL="${JIRA_BASE_URL}/rest/agile/1.0/board/${JIRA_BOARD_ID}/sprint?state=active,future&maxResults=50"
+  HTTP_CODE=$(curl -s -w "%{http_code}" -o "$TMPFILE" \
+    -H "Authorization: Bearer ${JIRA_PAT}" \
+    "$SPRINTS_URL")
+
+  if [[ "$HTTP_CODE" -lt 200 || "$HTTP_CODE" -ge 300 ]]; then
+    echo "Error: Failed to list board sprints (HTTP ${HTTP_CODE})" >&2
+    exit 3
+  fi
+
+  SPRINT_NAME=$(jq -r --arg q "$SPRINT_INPUT" '.values[] | select(.name | contains($q)) | .name' "$TMPFILE" | head -1)
+  if [[ -z "$SPRINT_NAME" ]]; then
+    echo "Error: No active/future sprint found matching \"${SPRINT_INPUT}\"" >&2
+    echo "Available sprints:" >&2
+    jq -r '.values[] | "  - \(.name) (\(.state))"' "$TMPFILE" >&2
+    exit 3
+  fi
+  echo "Resolved to: ${SPRINT_NAME}" >&2
+fi
 
 SEARCH_URL="${JIRA_BASE_URL}/rest/api/2/search"
 JQL="sprint = \"${SPRINT_NAME}\" AND cf[20002] = ${JIRA_TEAM_ID}"
