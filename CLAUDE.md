@@ -60,7 +60,7 @@ I am running a MacOS/Linux system and need help with configuration, setup, and a
 ### Installing Software
 
 1. For macOS, use Homebrew
-2. For Omarchy (Arch), prefer pacman/yay, fall back to Homebrew
+2. For Omarchy (Arch), use pacman/yay only — do not use Homebrew
 3. For Oracle Enterprise Linux 9, prefer dnf, fall back to Homebrew
 4. Manual installation as last resort
 5. Document installation method for future updates
