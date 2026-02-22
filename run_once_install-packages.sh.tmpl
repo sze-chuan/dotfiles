@@ -12,13 +12,17 @@ if ! command -v brew >/dev/null 2>&1; then
 fi
 
 brew install \
-  antidote \
   bat \
   eza \
   fzf \
   lazydocker \
   mise \
-  ripgrep
+  powerlevel10k \
+  ripgrep \
+  zsh-autosuggestions \
+  zsh-completions \
+  zsh-history-substring-search \
+  zsh-syntax-highlighting
 
 {{ if .is_work -}}
 brew install \
@@ -38,16 +42,19 @@ sudo pacman -S --needed --noconfirm \
   eza \
   fzf \
   ripgrep \
-  zsh-antidote
+  zsh-autosuggestions \
+  zsh-completions \
+  zsh-history-substring-search \
+  zsh-syntax-highlighting
 
-# AUR packages: lazydocker, mise
+# AUR packages: lazydocker, mise, powerlevel10k
 if command -v yay >/dev/null 2>&1; then
-  yay -S --needed --noconfirm lazydocker mise-bin
+  yay -S --needed --noconfirm lazydocker mise-bin zsh-theme-powerlevel10k
 elif command -v paru >/dev/null 2>&1; then
-  paru -S --needed --noconfirm lazydocker mise-bin
+  paru -S --needed --noconfirm lazydocker mise-bin zsh-theme-powerlevel10k
 else
   echo "WARNING: No AUR helper found. Install yay or paru, then run:" >&2
-  echo "  yay -S lazydocker mise-bin" >&2
+  echo "  yay -S lazydocker mise-bin zsh-theme-powerlevel10k" >&2
 fi
 
 {{ else -}}
@@ -60,13 +67,17 @@ if ! command -v brew >/dev/null 2>&1; then
 fi
 
 brew install \
-  antidote \
   bat \
   eza \
   fzf \
   lazydocker \
   mise \
-  ripgrep
+  powerlevel10k \
+  ripgrep \
+  zsh-autosuggestions \
+  zsh-completions \
+  zsh-history-substring-search \
+  zsh-syntax-highlighting
 
 {{ if .is_work -}}
 brew install \
