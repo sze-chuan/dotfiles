@@ -108,8 +108,8 @@ grepl() {
         return 1
     fi
 
-    # Execute awk command
-    awk "/^.*${service_name}/" "$input_file" > "$output_file"
+    # Use grep for safe pattern matching
+    grep -F "$service_name" "$input_file" > "$output_file"
     local exit_code=$?
 
     if [ $exit_code -eq 0 ]; then
@@ -248,23 +248,20 @@ connect-ui-dev() {
     # Step 3: Update env.list
     echo "Updating env.list..."
 
-    if grep -q "^EDGEOS_UI_BASE_URL=" "$env_file"; then
-        sed -i '' "s|^EDGEOS_UI_BASE_URL=.*|EDGEOS_UI_BASE_URL=https://${hostname}|" "$env_file"
-    else
-        echo "EDGEOS_UI_BASE_URL=https://${hostname}" >> "$env_file"
-    fi
+    # Cross-platform helper to update or append a key=value in a file
+    _update_env_var() {
+        local key="$1" value="$2" file="$3"
+        if grep -q "^${key}=" "$file"; then
+            local tmp=$(mktemp)
+            sed "s|^${key}=.*|${key}=${value}|" "$file" > "$tmp" && mv "$tmp" "$file"
+        else
+            echo "${key}=${value}" >> "$file"
+        fi
+    }
 
-    if grep -q "^EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=" "$env_file"; then
-        sed -i '' "s|^EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=.*|EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=${client_secret}|" "$env_file"
-    else
-        echo "EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=${client_secret}" >> "$env_file"
-    fi
-
-    if grep -q "^EDGEOS_UI_IMS_BOOTSTRAPLOGIN_SECRET=" "$env_file"; then
-        sed -i '' "s|^EDGEOS_UI_IMS_BOOTSTRAPLOGIN_SECRET=.*|EDGEOS_UI_IMS_BOOTSTRAPLOGIN_SECRET=${client_secret}|" "$env_file"
-    else
-        echo "EDGEOS_UI_IMS_BOOTSTRAPLOGIN_SECRET=${client_secret}" >> "$env_file"
-    fi
+    _update_env_var "EDGEOS_UI_BASE_URL" "https://${hostname}" "$env_file"
+    _update_env_var "EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET" "${client_secret}" "$env_file"
+    _update_env_var "EDGEOS_UI_IMS_BOOTSTRAPLOGIN_SECRET" "${client_secret}" "$env_file"
 
     echo ""
     echo "Successfully configured UI dev environment for ${hostname}"
