@@ -6,7 +6,14 @@ I am running a MacOS/Linux system and need help with configuration, setup, and a
 
 ## Current System Information
 
-- **Distribution**: MacOS 15.7 / Oracle Enterprise Linux 9
+### Machines
+
+| Machine | OS | Profile | Notes |
+|---|---|---|---|
+| MacBook (Apple Silicon) | macOS 15.7 | Work | Illumina / EdgeOS development |
+| Linux desktop | Omarchy (Arch-based) | Personal | Personal use only |
+| Linux server | Oracle Enterprise Linux 9 | Work | Illumina / EdgeOS development |
+
 - **Home Directory**: $HOME
 - **Working Directory**: Check with `pwd` before making assumptions
 
@@ -52,10 +59,11 @@ I am running a MacOS/Linux system and need help with configuration, setup, and a
 
 ### Installing Software
 
-1. For MacOS, use homebrew.
-2. For linux, check if available in distribution's package manager first. Else, use homebrew.
-3. Manual installation as last resort
-4. Document installation method for future updates
+1. For macOS, use Homebrew
+2. For Omarchy (Arch), prefer pacman/yay, fall back to Homebrew
+3. For Oracle Enterprise Linux 9, prefer dnf, fall back to Homebrew
+4. Manual installation as last resort
+5. Document installation method for future updates
 
 ### Configuration Files
 
@@ -117,10 +125,12 @@ My dotfiles are managed with chezmoi and backed up to GitHub at `sze-chuan/dotfi
 
 ### Work/personal profiles
 
-- MacOS is only used for work purposes
-- Linux is used for both and personal purposes
-- Certain dotfiles configuration are used only for work.
-- Reference chezmoi's [user guide](https://www.chezmoi.io/user-guide/command-overview/) to use their natives to manage work and personal profiles when possible.
+- **macOS** (Apple Silicon) — always work
+- **Omarchy** (Arch-based, `os-release` ID: `arch`) — always personal
+- **Oracle Enterprise Linux 9** (`os-release` ID: `ol`) — always work
+- Profile is auto-detected in `.chezmoi.toml.tmpl` via OS/distro ID; unknown distros prompt on `chezmoi init`
+- Work-specific configs (work-aliases, work-functions, `.env`) are gated behind `{{ .is_work }}` in templates and `.chezmoiignore`
+- Reference chezmoi's [user guide](https://www.chezmoi.io/user-guide/command-overview/) for managing profiles
 
 ### After modifying configuration files
 

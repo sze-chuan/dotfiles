@@ -12,6 +12,8 @@ fi
 # source antidote
 {{- if eq .chezmoi.os "darwin" }}
 source /opt/homebrew/opt/antidote/share/antidote/antidote.zsh
+{{- else if eq .chezmoi.osRelease.id "arch" }}
+source /usr/share/zsh-antidote/antidote.zsh
 {{- else }}
 source ${HOMEBREW_PREFIX:-/home/linuxbrew/.linuxbrew}/opt/antidote/share/antidote/antidote.zsh
 {{- end }}
