@@ -1,0 +1,76 @@
+#!/bin/bash
+set -euo pipefail
+
+{{- if eq .chezmoi.os "darwin" }}
+
+# --- macOS (Homebrew) ---
+
+if ! command -v brew &>/dev/null; then
+  echo "Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+brew_packages=(
+  antidote   # zsh plugin manager
+  mise       # dev tool version manager
+  eza        # modern ls replacement
+  fzf        # fuzzy finder
+)
+
+brew_casks=(
+  ghostty    # terminal emulator
+)
+
+echo "Installing brew packages..."
+brew install "${brew_packages[@]}"
+
+echo "Installing brew casks..."
+brew install --cask "${brew_casks[@]}" 2>/dev/null || true
+
+{{- else if eq .chezmoi.osRelease.id "arch" }}
+
+# --- Omarchy / Arch Linux (pacman + yay) ---
+
+pacman_packages=(
+  zsh
+  eza
+  fzf
+  mise
+)
+
+echo "Installing pacman packages..."
+sudo pacman -S --needed --noconfirm "${pacman_packages[@]}"
+
+# Install antidote from AUR via yay
+if command -v yay &>/dev/null; then
+  echo "Installing AUR packages..."
+  yay -S --needed --noconfirm zsh-antidote
+else
+  echo "Warning: yay not found, skipping AUR packages (antidote)"
+  echo "Install yay and run: yay -S zsh-antidote"
+fi
+
+{{- else if eq .chezmoi.osRelease.id "ol" }}
+
+# --- Oracle Enterprise Linux 9 (dnf + Homebrew) ---
+
+if ! command -v brew &>/dev/null; then
+  echo "Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+brew_packages=(
+  antidote   # zsh plugin manager
+  mise       # dev tool version manager
+  eza        # modern ls replacement
+  fzf        # fuzzy finder
+)
+
+echo "Installing brew packages..."
+brew install "${brew_packages[@]}"
+
+{{- end }}
+
+echo "Bootstrap complete."

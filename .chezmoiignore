@@ -1,0 +1,15 @@
+# Always ignore repo-level files
+CLAUDE.md
+IMPROVEMENTS.md
+
+# Ghostty is macOS-only
+{{ if ne .chezmoi.os "darwin" }}
+.config/ghostty
+{{ end }}
+
+# Work-specific files only on work machines
+{{ if not .is_work }}
+.config/zsh/work-aliases.zsh
+.config/zsh/work-functions.zsh
+.env
+{{ end }}
