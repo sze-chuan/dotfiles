@@ -7,7 +7,7 @@ I am running a MacOS/Linux system and need help with configuration, setup, and a
 ## Current System Information
 
 - **Distribution**: MacOS 15.7 / Oracle Enterprise Linux 9
-- **Home Directory**: /home/slai
+- **Home Directory**: $HOME
 - **Working Directory**: Check with `pwd` before making assumptions
 
 ## Core Principles

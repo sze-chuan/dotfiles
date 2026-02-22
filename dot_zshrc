@@ -30,10 +30,10 @@ eval "$(mise activate zsh)"
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
 
 # Amp CLI
-export PATH="/Users/slai/.amp/bin:$PATH"
+export PATH="$HOME/.amp/bin:$PATH"
 
 # opencode
-export PATH=/Users/slai/.opencode/bin:$PATH
+export PATH="$HOME/.opencode/bin:$PATH"
 
 # claude
 export PATH="$HOME/.local/bin:$PATH"
