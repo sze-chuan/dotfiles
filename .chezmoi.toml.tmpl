@@ -1,0 +1,15 @@
+{{- $is_work := false -}}
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   $is_work = true -}}
+{{- else -}}
+{{-   $is_work = promptBoolOnce . "is_work" "Is this a work machine" -}}
+{{- end }}
+
+[data]
+  is_work = {{ $is_work }}
+
+{{- if $is_work }}
+
+[data.jira]
+  pat = {{ promptStringOnce .jira "pat" "Jira personal access token" | quote }}
+{{- end }}

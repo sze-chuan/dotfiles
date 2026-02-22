@@ -10,7 +10,11 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # source antidote
-source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
+{{- if eq .chezmoi.os "darwin" }}
+source /opt/homebrew/opt/antidote/share/antidote/antidote.zsh
+{{- else }}
+source ${HOMEBREW_PREFIX:-/home/linuxbrew/.linuxbrew}/opt/antidote/share/antidote/antidote.zsh
+{{- end }}
 
 # initialize plugins
 antidote load
@@ -18,22 +22,17 @@ antidote load
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-eval "$(mise activate bash)"
 eval "$(mise activate zsh)"
 
 # Source alias and function files
 [[ -f "$XDG_CONFIG_HOME/zsh/aliases.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/aliases.zsh"
-[[ -f "$XDG_CONFIG_HOME/zsh/work-aliases.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/work-aliases.zsh"
 [[ -f "$XDG_CONFIG_HOME/zsh/functions.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/functions.zsh"
+{{- if .is_work }}
+[[ -f "$XDG_CONFIG_HOME/zsh/work-aliases.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/work-aliases.zsh"
 [[ -f "$XDG_CONFIG_HOME/zsh/work-functions.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/work-functions.zsh"
+{{- end }}
 
-[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
+[[ "$TERM_PROGRAM" == "vscode" ]] && command -v code &>/dev/null && . "$(code --locate-shell-integration-path zsh)"
 
-# Amp CLI
-export PATH="$HOME/.amp/bin:$PATH"
-
-# opencode
-export PATH="$HOME/.opencode/bin:$PATH"
-
-# claude
-export PATH="$HOME/.local/bin:$PATH"
+# Additional tools
+export PATH="$HOME/.local/bin:$HOME/.amp/bin:$HOME/.opencode/bin:$PATH"

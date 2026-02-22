@@ -1,0 +1,39 @@
+#!/bin/bash
+set -euo pipefail
+
+# Install Homebrew if not present
+if ! command -v brew &>/dev/null; then
+  echo "Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+{{- if eq .chezmoi.os "darwin" }}
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+{{- else }}
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+{{- end }}
+fi
+
+# Core packages used by dotfiles
+brew_packages=(
+  antidote   # zsh plugin manager
+  mise       # dev tool version manager
+  eza        # modern ls replacement
+  fzf        # fuzzy finder
+)
+
+{{- if eq .chezmoi.os "darwin" }}
+# macOS-only casks and packages
+brew_casks=(
+  ghostty    # terminal emulator
+)
+{{- end }}
+
+echo "Installing brew packages..."
+brew install "${brew_packages[@]}"
+
+{{- if eq .chezmoi.os "darwin" }}
+echo "Installing brew casks..."
+brew install --cask "${brew_casks[@]}" 2>/dev/null || true
+{{- end }}
+
+echo "Bootstrap complete."
