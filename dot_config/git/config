@@ -11,7 +11,6 @@
 	defaultBranch = main
 [core]
 	autocrlf = input
-	excludesfile = ~/.gitignore
 [column]
 	ui = auto
 [branch]
@@ -34,6 +33,12 @@
 	autocorrect = prompt
 [commit]
 	verbose = true
+[merge]
+	conflictStyle = zdiff3
+
+[transfer]
+	fsckObjects = true
+
 [rerere]
 	enabled = true
 	autoupdate = true
