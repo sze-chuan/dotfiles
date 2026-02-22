@@ -14,8 +14,8 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 
-# Personal assistant
-alias jarvis='cd ~/jarvis && claude --dangerously-skip-permissions'
+# Personal assistant — permission scope managed via ~/jarvis/.claude/settings.json
+alias jarvis='cd ~/jarvis && claude'
 
 # List aliases - using eza
 alias ls='eza --icons --group-directories-first'

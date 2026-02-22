@@ -248,20 +248,28 @@ connect-ui-dev() {
     # Step 3: Update env.list
     echo "Updating env.list..."
 
+    # Portable in-place sed: BSD (macOS) needs -i '', GNU (Linux) needs -i
+    local sed_i
+    if [[ "$OSTYPE" == darwin* ]]; then
+        sed_i=(sed -i '')
+    else
+        sed_i=(sed -i)
+    fi
+
     if grep -q "^EDGEOS_UI_BASE_URL=" "$env_file"; then
-        sed -i '' "s|^EDGEOS_UI_BASE_URL=.*|EDGEOS_UI_BASE_URL=https://${hostname}|" "$env_file"
+        "${sed_i[@]}" "s|^EDGEOS_UI_BASE_URL=.*|EDGEOS_UI_BASE_URL=https://${hostname}|" "$env_file"
     else
         echo "EDGEOS_UI_BASE_URL=https://${hostname}" >> "$env_file"
     fi
 
     if grep -q "^EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=" "$env_file"; then
-        sed -i '' "s|^EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=.*|EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=${client_secret}|" "$env_file"
+        "${sed_i[@]}" "s|^EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=.*|EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=${client_secret}|" "$env_file"
     else
         echo "EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=${client_secret}" >> "$env_file"
     fi
 
     if grep -q "^EDGEOS_UI_IMS_BOOTSTRAPLOGIN_SECRET=" "$env_file"; then
-        sed -i '' "s|^EDGEOS_UI_IMS_BOOTSTRAPLOGIN_SECRET=.*|EDGEOS_UI_IMS_BOOTSTRAPLOGIN_SECRET=${client_secret}|" "$env_file"
+        "${sed_i[@]}" "s|^EDGEOS_UI_IMS_BOOTSTRAPLOGIN_SECRET=.*|EDGEOS_UI_IMS_BOOTSTRAPLOGIN_SECRET=${client_secret}|" "$env_file"
     else
         echo "EDGEOS_UI_IMS_BOOTSTRAPLOGIN_SECRET=${client_secret}" >> "$env_file"
     fi
