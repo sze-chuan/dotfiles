@@ -1,0 +1,5 @@
+# Theme — use terminal's native 16-color palette so it adapts to any color scheme
+--theme="ansi"
+
+# Show line numbers, git change markers, and file header
+--style="numbers,changes,header"
