@@ -50,5 +50,7 @@ eval "$(mise activate zsh)"
 [[ -f "$XDG_CONFIG_HOME/zsh/work-functions.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/work-functions.zsh"
 {{- end }}
 
-[[ "$TERM_PROGRAM" == "vscode" ]] && command -v code &>/dev/null && . "$(code --locate-shell-integration-path zsh)"
+if [[ "$TERM_PROGRAM" == "vscode" ]] && command -v code &>/dev/null; then
+  . "$(code --locate-shell-integration-path zsh)"
+fi
 
