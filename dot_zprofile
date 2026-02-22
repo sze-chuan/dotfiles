@@ -1,0 +1,3 @@
+# PATH additions — kept in .zprofile (login shell only) so reload! doesn't
+# accumulate duplicate entries when .zshrc is re-sourced.
+export PATH="$HOME/.local/bin:$HOME/.amp/bin:$HOME/.opencode/bin:$PATH"

@@ -1,0 +1,80 @@
+#!/bin/sh
+# Bootstrap a fresh machine with required packages.
+# chezmoi runs this exactly once per machine (run_once_ semantics).
+set -e
+
+{{ if eq .chezmoi.os "darwin" -}}
+# ── macOS ─────────────────────────────────────────────────────────────────────
+
+if ! command -v brew >/dev/null 2>&1; then
+  echo "Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+brew install \
+  antidote \
+  bat \
+  eza \
+  fzf \
+  lazydocker \
+  mise \
+  ripgrep
+
+{{ if .is_work -}}
+brew install \
+  helm \
+  k9s \
+  yq
+{{ end -}}
+
+brew install --cask ghostty
+
+{{ else if eq .chezmoi.osRelease.id "arch" -}}
+# ── Arch Linux (Omarchy / personal) ───────────────────────────────────────────
+
+# Official repos
+sudo pacman -S --needed --noconfirm \
+  bat \
+  eza \
+  fzf \
+  ripgrep \
+  zsh-antidote
+
+# AUR packages: lazydocker, mise
+if command -v yay >/dev/null 2>&1; then
+  yay -S --needed --noconfirm lazydocker mise-bin
+elif command -v paru >/dev/null 2>&1; then
+  paru -S --needed --noconfirm lazydocker mise-bin
+else
+  echo "WARNING: No AUR helper found. Install yay or paru, then run:" >&2
+  echo "  yay -S lazydocker mise-bin" >&2
+fi
+
+{{ else -}}
+# ── Oracle Enterprise Linux 9 / other Linux ───────────────────────────────────
+
+if ! command -v brew >/dev/null 2>&1; then
+  echo "Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+brew install \
+  antidote \
+  bat \
+  eza \
+  fzf \
+  lazydocker \
+  mise \
+  ripgrep
+
+{{ if .is_work -}}
+brew install \
+  helm \
+  k9s \
+  yq
+{{ end -}}
+
+{{ end -}}
+
+echo "Bootstrap complete. Open a new shell or run: chezmoi apply"

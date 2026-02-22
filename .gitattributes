@@ -1,0 +1,2 @@
+# Generated files — suppress diffs and language stats on GitHub
+dot_p10k.zsh linguist-generated=true

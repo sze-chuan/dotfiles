@@ -1,0 +1,16 @@
+#!/bin/sh
+# Runs whenever the mise global config changes.
+# chezmoi re-runs this script when its rendered content changes, so the hash
+# below ensures a re-run any time dot_config/mise/config.toml is modified.
+#
+# mise config hash: {{ include "dot_config/mise/config.toml" | sha256sum }}
+
+set -e
+
+if ! command -v mise >/dev/null 2>&1; then
+  echo "mise not found — skipping tool installation" >&2
+  exit 0
+fi
+
+echo "mise: installing tools from global config..."
+mise install --quiet

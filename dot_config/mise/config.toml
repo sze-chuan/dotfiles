@@ -1,0 +1,12 @@
+# mise global tool config
+# https://mise.jdx.dev/configuration.html
+#
+# Add tool versions here to make them reproducible across machines.
+# Example:
+#   [tools]
+#   node = "lts"
+#   python = "3.12"
+#   go = "latest"
+
+[tools]
+# Add global tool versions here
