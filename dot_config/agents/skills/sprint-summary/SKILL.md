@@ -1,11 +1,13 @@
 ---
 name: sprint-summary
-description: "Drafts a sprint preview/heads-up message for the team by fetching issues from Jira and generating a structured summary. Use when preparing a sprint overview or heads-up before a sprint starts."
+description: "Drafts a sprint preview/heads-up message for the team, or generates statistics across multiple sprints, by fetching issues from Jira. Use when preparing a sprint overview or analysing sprint data."
 ---
 
 # Sprint Summary
 
-Generate a sprint preview message for the UI Ninjas team by pulling issues from Jira and drafting a structured summary.
+Assist the UI Ninjas team with sprint data from Jira. Supports two modes:
+- **Summary** — draft a heads-up message for an upcoming sprint
+- **Stats** — generate ticket statistics across one or more sprints
 
 ## Prerequisites
 
@@ -15,11 +17,23 @@ Generate a sprint preview message for the UI Ninjas team by pulling issues from 
 
 ## Workflow
 
-### 1. Get sprint name
+### 1. Select mode
 
-Ask the user for the sprint name (e.g., "Sprint 26.1.4").
+Ask the user which mode they want:
+- **Summary** — upcoming sprint heads-up
+- **Stats** — statistics across multiple sprints
 
-### 2. Fetch sprint issues
+Then follow the corresponding workflow below.
+
+---
+
+## Mode: Summary
+
+### S1. Get sprint name
+
+Ask the user for the sprint name (e.g., "26.1.4").
+
+### S2. Fetch sprint issues
 
 Run the fetch script and save output to a temp file:
 
@@ -32,7 +46,7 @@ If the script fails, check the exit code:
 - **2**: `JIRA_PAT` not set — ask the user to export it
 - **3**: Jira API error — show the error and ask the user to verify the sprint name
 
-### 3. Parse and categorise issues
+### S3. Parse and categorise issues
 
 Read `/tmp/sprint-issues.json` and organise issues into categories:
 
@@ -51,7 +65,7 @@ For each issue, extract:
 - `fields.issuelinks` — linked issues (look for blocking relationships)
 - `fields.epicName` — resolved epic name (injected by fetch script from `customfield_10006`)
 
-### 4. Draft the summary
+### S4. Draft the summary
 
 Use this template:
 
@@ -88,20 +102,76 @@ Guidelines for Bugs and tech improvements:
 Focus and Notes sections:
 - Leave as placeholders for the user to fill in. Do not auto-generate focus items.
 
-### 5. Ask user for notes
+### S5. Ask user for notes
 
 Present the draft to the user and ask:
 - Any items to add, remove, or change?
 - Content for the Focus and Notes sections?
 
-### 6. Present final summary
+### S6. Present final summary
 
 Apply the user's feedback and present the final markdown summary, ready to copy into Slack or email.
+
+---
+
+## Mode: Stats
+
+### T1. Get sprint list
+
+Ask the user for one or more sprint names to include (e.g., `26.1.2`, `26.1.3`, `26.1.4`).
+
+### T2. Fetch issues per sprint
+
+For each sprint, run the fetch script and save to a numbered temp file:
+
+```bash
+~/.config/agents/skills/sprint-summary/fetch-sprint-issues.sh "<sprint-name>" > /tmp/sprint-issues-<sprint-name>.json
+```
+
+Use the same error handling as Mode: Summary (S2).
+
+Collect all per-sprint JSON files for processing in the next step.
+
+### T3. Compute statistics
+
+For each sprint, read its JSON file and compute:
+
+| Stat | Definition |
+|---|---|
+| Total tickets | Total number of issues |
+| Tickets closed | `fields.status.name` in `["Done", "Closed", "Resolved"]` |
+| Bugs closed | `fields.issuetype.name == "Bug"` AND status closed |
+| Features/Stories delivered | `fields.issuetype.name` in `["Story", "Feature"]` AND status closed |
+
+Also compute aggregate totals across all sprints.
+
+### T4. Present the stats table
+
+Display a markdown table:
+
+```
+Sprint Stats: <first-sprint> → <last-sprint>
+
+| Sprint  | Total | Closed | Bugs Closed | Features Done |
+|---------|-------|--------|-------------|---------------|
+| 26.1.2  |  24   |   18   |      3      |       5       |
+| 26.1.3  |  30   |   25   |      5      |       7       |
+| 26.1.4  |  22   |   20   |      2      |       6       |
+| **Total** | **76** | **63** | **10** | **18** |
+```
+
+### T5. Ask for follow-up
+
+Ask the user:
+- Any sprint to drill into for a full issue breakdown?
+- Want to switch to Summary mode for one of these sprints?
+
+---
 
 ## Rules
 
 - Do not fabricate issue data — only use what comes from the Jira API response
-- Keep the summary concise and scannable — bullet points, not paragraphs
-- Group related issues together when it aids readability
+- Keep output concise and scannable — tables and bullet points, not paragraphs
 - If there are no issues in a category, omit that category header entirely
 - If the fetch returns zero issues, tell the user and ask them to verify the sprint name
+- In Stats mode, if a sprint fetch fails, skip it, note the failure, and continue with the rest
