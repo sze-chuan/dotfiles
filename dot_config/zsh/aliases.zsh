@@ -17,6 +17,9 @@ alias ....='cd ../../..'
 # Personal assistant — permission scope managed via ~/jarvis/.claude/settings.json
 alias jarvis='cd ~/jarvis && claude'
 
+# Cat alias - using bat
+alias cat='bat'
+
 # List aliases - using eza
 alias ls='eza --icons --group-directories-first'
 alias ll='eza -l --icons --group-directories-first --git'
