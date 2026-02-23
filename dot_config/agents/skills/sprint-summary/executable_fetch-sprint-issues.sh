@@ -13,6 +13,14 @@
 
 set -euo pipefail
 
+# Auto-load ~/.env if JIRA_PAT is not already set
+if [[ -z "${JIRA_PAT:-}" && -f "$HOME/.env" ]]; then
+  set -a
+  # shellcheck source=/dev/null
+  source "$HOME/.env"
+  set +a
+fi
+
 JIRA_BASE_URL="${JIRA_BASE_URL:-https://jira.illumina.com}"
 JIRA_BOARD_ID="${JIRA_BOARD_ID:-4329}"
 JIRA_TEAM_ID="${JIRA_TEAM_ID:-317}"
@@ -37,21 +45,34 @@ trap 'rm -f "$TMPFILE"' EXIT
 SPRINT_NAME="$SPRINT_INPUT"
 if [[ "$SPRINT_INPUT" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   echo "Resolving sprint name for: ${SPRINT_INPUT}" >&2
-  SPRINTS_URL="${JIRA_BASE_URL}/rest/agile/1.0/board/${JIRA_BOARD_ID}/sprint?state=active,future&maxResults=50"
-  HTTP_CODE=$(curl -s -w "%{http_code}" -o "$TMPFILE" \
-    -H "Authorization: Bearer ${JIRA_PAT}" \
-    "$SPRINTS_URL")
+  SPRINT_NAME=""
+  START_AT_SPRINT=0
+  while true; do
+    SPRINTS_URL="${JIRA_BASE_URL}/rest/agile/1.0/board/${JIRA_BOARD_ID}/sprint?state=active,future,closed&maxResults=100&startAt=${START_AT_SPRINT}"
+    HTTP_CODE=$(curl -s -w "%{http_code}" -o "$TMPFILE" \
+      -H "Authorization: Bearer ${JIRA_PAT}" \
+      "$SPRINTS_URL")
 
-  if [[ "$HTTP_CODE" -lt 200 || "$HTTP_CODE" -ge 300 ]]; then
-    echo "Error: Failed to list board sprints (HTTP ${HTTP_CODE})" >&2
-    exit 3
-  fi
+    if [[ "$HTTP_CODE" -lt 200 || "$HTTP_CODE" -ge 300 ]]; then
+      echo "Error: Failed to list board sprints (HTTP ${HTTP_CODE})" >&2
+      exit 3
+    fi
 
-  SPRINT_NAME=$(jq -r --arg q "$SPRINT_INPUT" '.values[] | select(.name | contains($q)) | .name' "$TMPFILE" | head -1)
+    SPRINT_NAME=$(jq -r --arg q "$SPRINT_INPUT" '.values[] | select(.name | contains($q)) | .name' "$TMPFILE" | head -1)
+    if [[ -n "$SPRINT_NAME" ]]; then
+      break
+    fi
+
+    IS_LAST=$(jq -r '.isLast' "$TMPFILE")
+    RETURNED_SPRINTS=$(jq -r '.values | length' "$TMPFILE")
+    START_AT_SPRINT=$((START_AT_SPRINT + RETURNED_SPRINTS))
+    if [[ "$IS_LAST" == "true" ]]; then
+      break
+    fi
+  done
+
   if [[ -z "$SPRINT_NAME" ]]; then
-    echo "Error: No active/future sprint found matching \"${SPRINT_INPUT}\"" >&2
-    echo "Available sprints:" >&2
-    jq -r '.values[] | "  - \(.name) (\(.state))"' "$TMPFILE" >&2
+    echo "Error: No sprint found matching \"${SPRINT_INPUT}\"" >&2
     exit 3
   fi
   echo "Resolved to: ${SPRINT_NAME}" >&2

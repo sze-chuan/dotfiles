@@ -134,12 +134,14 @@ Collect all per-sprint JSON files for processing in the next step.
 
 ### T3. Compute statistics
 
+Sub-tasks (`fields.issuetype.name == "Sub-task"`) are excluded from all counts.
+
 For each sprint, read its JSON file and compute:
 
 | Stat | Definition |
 |---|---|
-| Total tickets | Total number of issues |
-| Tickets closed | `fields.status.name` in `["Done", "Closed", "Resolved"]` |
+| Total tickets | Total number of issues (excluding Sub-tasks) |
+| Tickets closed | `fields.status.name` in `["Done", "Closed", "Resolved"]` AND not Sub-task |
 | Bugs closed | `fields.issuetype.name == "Bug"` AND status closed |
 | Features/Stories delivered | `fields.issuetype.name` in `["Story", "Feature"]` AND status closed |
 
