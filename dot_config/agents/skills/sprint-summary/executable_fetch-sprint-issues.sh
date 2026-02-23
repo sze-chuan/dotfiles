@@ -80,7 +80,7 @@ fi
 
 SEARCH_URL="${JIRA_BASE_URL}/rest/api/2/search"
 JQL="sprint = \"${SPRINT_NAME}\" AND cf[20002] = ${JIRA_TEAM_ID}"
-FIELDS="key,summary,issuetype,status,priority,assignee,labels,issuelinks"
+FIELDS="key,summary,issuetype,status,priority,assignee,labels,issuelinks,created"
 PAGE_SIZE=50
 
 ALL_ISSUES="[]"
@@ -94,7 +94,7 @@ while true; do
     --arg jql "$JQL" \
     --argjson startAt "$START_AT" \
     --argjson maxResults "$PAGE_SIZE" \
-    '{jql: $jql, startAt: $startAt, maxResults: $maxResults, fields: ["key","summary","issuetype","status","priority","assignee","labels","issuelinks","customfield_10006"]}'
+    '{jql: $jql, startAt: $startAt, maxResults: $maxResults, fields: ["key","summary","issuetype","status","priority","assignee","labels","issuelinks","created","customfield_10006"]}'
   )
 
   HTTP_CODE=$(curl -s -w "%{http_code}" -o "$TMPFILE" \

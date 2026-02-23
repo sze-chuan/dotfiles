@@ -144,6 +144,9 @@ For each sprint, read its JSON file and compute:
 | Tickets closed | `fields.status.name` in `["Done", "Closed", "Resolved"]` AND not Sub-task |
 | Bugs closed | `fields.issuetype.name == "Bug"` AND status closed |
 | Features/Stories delivered | `fields.issuetype.name` in `["Story", "Feature"]` AND status closed |
+| New bugs | `fields.issuetype.name == "Bug"` AND `fields.created` falls within the sprint date range |
+
+Sprint date ranges are parsed from the resolved sprint name (e.g. "EdgeOS 26.1.4 (02/16-02/27)") and passed to jq as `$sprint_start` / `$sprint_end`. Note: use `$sprint_start`/`$sprint_end` — **not** `$start`/`$end`, as `$end` is a reserved word in jq 1.6.
 
 Also compute aggregate totals across all sprints.
 
@@ -154,12 +157,12 @@ Display a markdown table:
 ```
 Sprint Stats: <first-sprint> → <last-sprint>
 
-| Sprint  | Total | Closed | Bugs Closed | Features Done |
-|---------|-------|--------|-------------|---------------|
-| 26.1.2  |  24   |   18   |      3      |       5       |
-| 26.1.3  |  30   |   25   |      5      |       7       |
-| 26.1.4  |  22   |   20   |      2      |       6       |
-| **Total** | **76** | **63** | **10** | **18** |
+| Sprint  | Total | Closed | Bugs Closed | Features Done | New Bugs |
+|---------|-------|--------|-------------|---------------|----------|
+| 26.1.2  |  24   |   18   |      3      |       5       |    4     |
+| 26.1.3  |  30   |   25   |      5      |       7       |    6     |
+| 26.1.4  |  22   |   20   |      2      |       6       |    3     |
+| **Total** | **76** | **63** | **10** | **18** | **13** |
 ```
 
 ### T5. Ask for follow-up
