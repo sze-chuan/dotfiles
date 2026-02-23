@@ -146,7 +146,12 @@ For each sprint, read its JSON file and compute:
 | Features/Stories delivered | `fields.issuetype.name` in `["Story", "Feature"]` AND status closed |
 | New bugs | `fields.issuetype.name == "Bug"` AND `fields.created` falls within the sprint date range |
 
-Sprint date ranges are parsed from the resolved sprint name (e.g. "EdgeOS 26.1.4 (02/16-02/27)") and passed to jq as `$sprint_start` / `$sprint_end`. Note: use `$sprint_start`/`$sprint_end` — **not** `$start`/`$end`, as `$end` is a reserved word in jq 1.6.
+Sprint date ranges are parsed from the resolved sprint name (e.g. "EdgeOS 26.1.4 (02/16-02/27)") and passed to jq as `$sprint_start` / `$sprint_end`.
+
+Important notes:
+- The year is derived from the sprint name prefix: `26.x.x` = **2026**, `25.x.x` = **2025**, etc.
+- Use `$sprint_start`/`$sprint_end` — **not** `$start`/`$end`, as `$end` is a reserved word in jq 1.6.
+- macOS ships with bash 3.2 which does not support associative arrays (`declare -A`). Use a `case` statement to map sprint names to date ranges instead.
 
 Also compute aggregate totals across all sprints.
 
