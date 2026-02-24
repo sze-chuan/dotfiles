@@ -1,20 +1,29 @@
 ---
 name: acceptance-criteria
-description: Generates user-facing acceptance criteria for testers based on the diff between the current branch and main. Use when the user asks to generate AC, acceptance criteria, or test criteria for their changes.
+description: Generates user-facing acceptance criteria for testers based on the diff between the current branch and main, then appends the AC to the Jira ticket description. Use when the user asks to generate AC, acceptance criteria, or test criteria for their changes.
 ---
 
 # Acceptance Criteria Generator
 
-Generate clear, non-technical acceptance criteria for testers based on the changes introduced in the current branch compared to `main`.
+Generate clear, non-technical acceptance criteria for testers based on the changes introduced in the current branch compared to `main`, then append the AC to the linked Jira ticket.
+
+## Prerequisites
+
+- `JIRA_PAT` environment variable set with a valid Jira Personal Access Token
+- Auto-loaded from `~/.env` if not already set in the environment
 
 ## Workflow
 
-### 1. Gather branch changes
+### 1. Gather branch context
 
 Run these in parallel:
+- `git branch --show-current` — get the current branch name
 - `git log main...HEAD --oneline` — list commits on this branch
 - `git diff main...HEAD --stat` — summarise files changed
 - `git diff main...HEAD` — full diff to understand what changed
+
+Extract the Jira ticket key from the branch name (e.g. `EDGEOS-1234` from `feature/EDGEOS-1234-some-description`).
+If no ticket key can be found in the branch name, ask the user to provide it before continuing.
 
 ### 2. Understand the changes
 
@@ -74,6 +83,68 @@ Present the acceptance criteria to the user and ask:
 
 Apply any feedback and present the final version.
 
+### 6. Fetch the current ticket description
+
+Auto-load `~/.env` if `JIRA_PAT` is not set:
+```bash
+if [[ -z "${JIRA_PAT:-}" && -f "$HOME/.env" ]]; then
+  set -a; source "$HOME/.env"; set +a
+fi
+```
+
+Fetch the current issue to get its existing description:
+```bash
+JIRA_BASE_URL="${JIRA_BASE_URL:-https://jira.illumina.com}"
+
+curl -s \
+  -H "Authorization: Bearer ${JIRA_PAT}" \
+  "${JIRA_BASE_URL}/rest/api/2/issue/<TICKET-KEY>?fields=description"
+```
+
+Extract the `fields.description` value from the response. It may be `null` if the ticket has no description yet.
+
+### 7. Append AC to the ticket description
+
+Build the updated description by appending the AC block to the existing description. If the description is `null` or empty, use only the AC block.
+
+Format the AC section to append as plain text (Jira uses its own wiki markup — use `h2.` for headings and `#` for numbered lists):
+
+```
+h2. Acceptance Criteria
+
+<# Criterion one>
+<# Criterion two>
+...
+
+h2. Edge Cases
+
+<# Edge case one>
+<# Edge case two>
+```
+
+If the existing description already contains an `h2. Acceptance Criteria` section, **replace** that section rather than appending a duplicate.
+
+Then update the ticket via the Jira API:
+```bash
+curl -s -o /tmp/jira-update-response.json -w "%{http_code}" \
+  -X PUT \
+  -H "Authorization: Bearer ${JIRA_PAT}" \
+  -H "Content-Type: application/json" \
+  -d "{\"fields\": {\"description\": \"<escaped-description>\"}}" \
+  "${JIRA_BASE_URL}/rest/api/2/issue/<TICKET-KEY>"
+```
+
+Use `jq` to safely construct the JSON payload and escape the description string:
+```bash
+jq -n --arg desc "<full updated description>" '{"fields": {"description": $desc}}'
+```
+
+### 8. Confirm success
+
+- If the HTTP response code is `204`, report success and show the ticket URL:
+  `${JIRA_BASE_URL}/browse/<TICKET-KEY>`
+- If the response is not `204`, show the HTTP code and response body, and tell the user the update failed without modifying any local files.
+
 ## Rules
 
 - Write for **testers**, not developers — assume the reader has no access to the codebase
@@ -82,3 +153,5 @@ Apply any feedback and present the final version.
 - If the diff is empty or only contains non-user-facing changes (e.g. config, tests, comments), say so and ask the user to describe the intended behaviour instead
 - Keep each criterion to one sentence where possible
 - Use plain, direct language
+- Always confirm the final AC with the user before writing to Jira — never update the ticket without user approval
+- Never overwrite the full description; always preserve existing content and only add/replace the AC section
