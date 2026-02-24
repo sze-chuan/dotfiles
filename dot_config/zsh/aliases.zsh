@@ -36,3 +36,10 @@ alias gwtl='gwt-list'
 alias gwtcd='gwt-cd'
 alias gwtcl='gwt-clone'
 alias gwth='gwt-help'
+
+# Git
+alias gco='git checkout'
+alias gcb='git checkout -b'
+alias gl='git pull'
+alias gsta='git stash push'
+alias gstp='git stash pop'
