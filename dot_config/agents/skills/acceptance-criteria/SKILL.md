@@ -106,11 +106,22 @@ curl -s \
   "${JIRA_BASE_URL}/rest/api/2/issue/<TICKET-KEY>?fields=description"
 ```
 
-Extract the `fields.description` value from the response. It may be `null` if the ticket has no description yet.
+Extract and normalise the `fields.description` value from the response:
+```bash
+EXISTING_DESC=$(curl -s \
+  -H "Authorization: Bearer ${JIRA_PAT}" \
+  "${JIRA_BASE_URL}/rest/api/2/issue/<TICKET-KEY>?fields=description" \
+  | jq -r '.fields.description // ""' \
+  | tr -d '\r')
+```
+
+Using `jq -r` interprets JSON escape sequences into real characters, and `tr -d '\r'` removes any carriage returns (`\r`) so they are not stored back as literal `\r\n` sequences in the updated description.
+
+If `EXISTING_DESC` is empty, the ticket has no description yet.
 
 ### 7. Append AC to the ticket description
 
-Build the updated description by appending the AC block to the existing description. If the description is `null` or empty, use only the AC block.
+Build the updated description by appending the AC block to the existing description. If `EXISTING_DESC` is empty, use only the AC block.
 
 Format the AC section to append as plain text (Jira uses its own wiki markup — use `h2.` for headings and `#` for numbered lists):
 
