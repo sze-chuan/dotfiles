@@ -22,8 +22,13 @@ Run these in parallel:
 - `git diff main...HEAD --stat` — summarise files changed
 - `git diff main...HEAD` — full diff to understand what changed
 
-Extract the Jira ticket key from the branch name (e.g. `EDGEOS-1234` from `feature/EDGEOS-1234-some-description`).
-If no ticket key can be found in the branch name, ask the user to provide it before continuing.
+Extract the Jira ticket key from the branch name using:
+```bash
+git branch --show-current | grep -oE 'EDGEOS-[0-9]+'
+```
+
+If the command returns a key (e.g. `EDGEOS-1234`), use it for all subsequent Jira API calls.
+If it returns nothing, ask the user: "I couldn't find a Jira ticket number in the branch name. What is the ticket key (e.g. EDGEOS-1234)?"
 
 ### 2. Understand the changes
 
