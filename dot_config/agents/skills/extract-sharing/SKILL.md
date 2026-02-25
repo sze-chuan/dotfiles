@@ -44,6 +44,28 @@ Save the final note to Bear using `bear-create-note` with:
 
 Tell the user the note has been saved and is ready in Bear.
 
+### 5. Create presentation (only when prompted)
+
+Do NOT create a presentation by default. Only do this when the user explicitly asks (e.g., "create presentation", "make slides", "convert to marp").
+
+Convert the sharing note into a Marp-format markdown presentation:
+- Use the `~/repos/docs/Presentations/` folder, in a subfolder matching the topic (kebab-case)
+- Follow the Marp frontmatter convention:
+  ```
+  ---
+  marp: true
+  style: |
+    img[alt~="center"] {
+      display: block;
+      margin: 0 auto;
+    }
+  ---
+  ```
+- Split content into slides using `---` separators
+- One key idea per slide — keep slides concise
+- Use the same structure as the Bear note but adapted for presentation (shorter bullets, less prose)
+- Include a title slide, a references slide at the end
+
 ## Rules
 
 - Do not invent content — only synthesise what is in the references and the user's overview
