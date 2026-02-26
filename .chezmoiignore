@@ -11,5 +11,4 @@ IMPROVEMENTS.md
 {{ if not .is_work }}
 .config/zsh/work-aliases.zsh
 .config/zsh/work-functions.zsh
-.env
 {{ end }}

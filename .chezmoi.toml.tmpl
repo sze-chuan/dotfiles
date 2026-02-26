@@ -15,6 +15,9 @@
 [data]
   is_work = {{ $is_work }}
 
+[data.raindrop]
+  token = {{ promptStringOnce .raindrop "token" "Raindrop.io API token" | quote }}
+
 {{- if $is_work }}
 
 [data.jira]
