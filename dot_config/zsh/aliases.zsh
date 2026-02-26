@@ -39,6 +39,7 @@ alias gwtcl='gwt-clone'
 alias gwth='gwt-help'
 
 # Git
+alias gst='git status'
 alias gco='git checkout'
 alias gcb='git checkout -b'
 alias gl='git pull'
