@@ -1,16 +1,17 @@
 ---
 name: raindrop
-description: Manage Raindrop.io bookmarks — view, search, organise, edit, and delete. Use when the user wants to work with their Raindrop bookmarks or collections.
+description: Manage Raindrop.io bookmarks — view, search, organise, edit, delete, and summarise. Use when the user wants to work with their Raindrop bookmarks or collections.
 user_invocable: true
 ---
 
 # Raindrop Bookmark Manager
 
-Manage Raindrop.io bookmarks via the REST API. Supports four modes:
+Manage Raindrop.io bookmarks via the REST API. Supports five modes:
 - **View** — browse or search bookmarks
 - **Organize** — move bookmarks between collections or bulk-update tags
 - **Edit** — update a bookmark's title, URL, tags, note, or collection
 - **Delete** — remove one or more bookmarks
+- **Summarize** — fetch and summarise the content of one or more bookmarks
 
 ## Prerequisites
 
@@ -44,6 +45,7 @@ Ask the user which mode they want:
 - **Organize** — move or bulk-tag bookmarks
 - **Edit** — update a single bookmark
 - **Delete** — delete one or more bookmarks
+- **Summarize** — fetch and summarise the content of a bookmark
 
 Then follow the corresponding workflow below.
 
@@ -107,6 +109,7 @@ Show total count from `result.count`. If there are more pages, tell the user and
 
 After displaying results, ask:
 - Open a bookmark URL?
+- Summarize one or more bookmarks? (enters Summarize mode for the selected items)
 - Switch to Edit or Delete mode for any listed item?
 - Refine the search?
 
@@ -262,9 +265,121 @@ Report how many bookmarks were deleted (or trashed). If the API returns an error
 
 ---
 
+## Mode: Summarize
+
+### S1. Identify bookmarks to summarise
+
+Ask the user:
+- Summarise a single bookmark by ID or title/URL search?
+- Summarise multiple bookmarks (batch)?
+
+If the user came from View mode with items already listed, allow them to pick by number from that list.
+
+If searching:
+```bash
+curl -s -H "$AUTH" \
+  "${BASE_URL}/raindrops/0?search=<query>&perpage=10" \
+  | jq '.items[] | {id, title, link, excerpt}'
+```
+
+Show matches and ask the user to confirm which to summarise.
+
+### S2. Fetch bookmark details
+
+For each selected bookmark:
+```bash
+curl -s -H "$AUTH" "${BASE_URL}/raindrop/${ID}" \
+  | jq '.item | {id, title, link, excerpt, note, tags}'
+```
+
+### S3. Fetch and summarise content
+
+Use the `WebFetch` tool to retrieve the full content of the bookmark's `link` URL.
+
+Prompt to use when fetching: "Extract the full article text, key points, and main arguments. Include any code examples, commands, or technical specifics mentioned."
+
+If `WebFetch` fails or returns no meaningful content (e.g. paywalled, login-gated, JavaScript-only SPA):
+- Fall back to the Raindrop `excerpt` if available
+- Clearly note that the summary is based only on the excerpt, not the full article
+
+### S4. Generate the summary
+
+Analyse the fetched content and produce a summary. Use the following rules to tailor the output:
+
+#### Detect content type
+
+Classify the article as one of:
+- **Software Engineering** — architecture, systems design, distributed systems, APIs, databases, programming languages, DevOps, infrastructure, performance, security, engineering culture/process
+- **General Tech** — product news, industry trends, non-technical business/startup content
+- **Other** — non-tech content
+
+#### Software Engineering articles — senior engineer lens
+
+For software engineering content, structure the summary to highlight what matters most to a senior engineer:
+
+```
+### Summary: <Title>
+<URL>
+
+**TL;DR**
+1–2 sentences capturing the core thesis.
+
+**Key Insights**
+- Bullet points covering the main technical ideas, decisions, or findings.
+
+**Architecture / Design Decisions**
+- Any notable architectural patterns, trade-offs, or design choices discussed.
+- If the article compares approaches, summarise the trade-offs clearly.
+
+**Scale & Performance**
+- Mentions of scale, throughput, latency, resource usage, or optimisation techniques. (Omit if not relevant.)
+
+**Operational Considerations**
+- Reliability, observability, failure modes, deployment, or on-call implications. (Omit if not relevant.)
+
+**Engineering Process & Culture**
+- Team structure, ownership, incident response, technical debt management, or org-level learnings. (Omit if not relevant.)
+
+**Actionable Takeaways**
+- What a senior engineer can apply, evaluate, or discuss with their team.
+
+**Tags suggested** (optional): list any tags worth adding to the bookmark
+```
+
+#### General Tech / Other articles
+
+Use a concise format:
+
+```
+### Summary: <Title>
+<URL>
+
+**TL;DR**
+1–2 sentences.
+
+**Key Points**
+- Bullet list of the main points.
+
+**Why it matters**
+One short paragraph on relevance or context.
+```
+
+### S5. Offer follow-up
+
+After each summary, ask:
+- Save the TL;DR or key insights as the bookmark's `note` or `excerpt` in Raindrop? (enters Edit mode)
+- Suggest tags to add to the bookmark?
+- Summarise another bookmark?
+
+---
+
 ## Rules
 
 - Always load `RAINDROP_TOKEN` from `~/.env` if not set in the environment
+- For Summarize mode: use `WebFetch` to retrieve full article content; fall back to Raindrop `excerpt` only if fetch fails — always state which source was used
+- Never fabricate content in summaries — only summarise what is present in the fetched page or excerpt
+- For software engineering articles, always apply the senior engineer lens (architecture, scale, ops, process, actionable takeaways); omit sections that have no relevant content rather than writing empty placeholders
+- After a summary, offer to save the TL;DR back to Raindrop as the bookmark note
 - Never fabricate bookmark data — only show what comes from the API
 - Always confirm before deleting — show titles, not just IDs
 - Warn users when bulk tag updates will replace existing tags
