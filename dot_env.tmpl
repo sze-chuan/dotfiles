@@ -1,5 +1,5 @@
 # Credentials — actual values set in ~/.config/chezmoi/chezmoi.toml
 RAINDROP_TOKEN={{ .raindrop_token | quote }}
 {{ if .is_work -}}
-JIRA_PAT={{ .jira_pat | quote }}
+JIRA_PAT={{ .jira.pat | quote }}
 {{- end }}
