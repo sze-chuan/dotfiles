@@ -19,5 +19,5 @@
 {{- if $is_work }}
 
 [data.jira]
-  pat = {{ promptStringOnce .jira "pat" "Jira personal access token" | quote }}
+  pat = {{ promptStringOnce . "jira_pat" "Jira personal access token" | quote }}
 {{- end }}
