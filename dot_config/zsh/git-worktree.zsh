@@ -73,11 +73,17 @@ gwt-init() {
     mv "$temp_dir/.bare" "$repo_root/"
     mv "$temp_dir/$main_branch" "$repo_root/"
 
-    # Update worktree path in git config
-    # The worktree path in .bare/worktrees/<branch>/gitdir needs to be updated
+    # Update both sides of the worktree symlink after the move:
+    # 1. .bare/worktrees/<branch>/gitdir -> points to worktree's .git file
     local worktree_config="$repo_root/.bare/worktrees/$main_branch/gitdir"
     if [[ -f "$worktree_config" ]]; then
         echo "$repo_root/$main_branch/.git" > "$worktree_config"
+    fi
+
+    # 2. <branch>/.git -> points back to bare repo's worktrees directory
+    local worktree_git="$repo_root/$main_branch/.git"
+    if [[ -f "$worktree_git" ]]; then
+        echo "gitdir: $repo_root/.bare/worktrees/$main_branch" > "$worktree_git"
     fi
 
     # Clean up temp directory
