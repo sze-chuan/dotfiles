@@ -237,7 +237,7 @@ connect-ui-dev() {
     # Step 2: Fetch Keycloak UI client secret from Kubernetes secret
     echo "Fetching Keycloak UI client secret from ${hostname}..."
     local client_secret
-    client_secret=$(ssh root@"${hostname}" "kubectl get secret keycloak-creds -o jsonpath='{.data.edgeos_ui_client_secret}'" | base64 --decode)
+    client_secret=$(ssh root@"${hostname}" "kubectl get secret keycloak-client -o jsonpath='{.data.edgeos_ui_client_secret}'" | base64 --decode)
 
     if [ -z "$client_secret" ] || [ "$client_secret" = "null" ]; then
         echo "Error: Failed to retrieve Keycloak UI client secret"
