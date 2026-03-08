@@ -1,0 +1,17 @@
+[user]
+name = "Sze Chuan"
+email = "{{ if .is_work }}szechuan.lai@illumina.com{{ else }}sze.chuan@gmail.com{{ end }}"
+
+[ui]
+# Show diff in the commit description editor (like git commit.verbose = true)
+default-command = "log"
+# Closest equivalent to git merge.conflictStyle = zdiff3 (jj doesn't support zdiff3)
+conflict-marker-style = "diff3"
+
+[diff]
+# Match git diff.algorithm = histogram
+algorithm = "histogram"
+
+[git]
+# Don't auto-create local bookmarks on fetch; use remote bookmarks directly in jj workflow
+auto-local-bookmark = false
