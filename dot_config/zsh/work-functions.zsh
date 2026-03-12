@@ -261,6 +261,12 @@ connect-ui-dev() {
         echo "EDGEOS_UI_BASE_URL=https://${hostname}" >> "$env_file"
     fi
 
+    if grep -q "^EDGEOS_IMS_BASE_URL=" "$env_file"; then
+        "${sed_i[@]}" "s|^EDGEOS_IMS_BASE_URL=.*|EDGEOS_IMS_BASE_URL=https://${hostname}|" "$env_file"
+    else
+        echo "EDGEOS_IMS_BASE_URL=https://${hostname}" >> "$env_file"
+    fi
+
     if grep -q "^EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=" "$env_file"; then
         "${sed_i[@]}" "s|^EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=.*|EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=${client_secret}|" "$env_file"
     else
@@ -277,6 +283,7 @@ connect-ui-dev() {
     echo "Successfully configured UI dev environment for ${hostname}"
     echo "Updated env.list with:"
     echo "  EDGEOS_UI_BASE_URL=https://${hostname}"
+    echo "  EDGEOS_IMS_BASE_URL=https://${hostname}"
     echo "  EDGEOS_UI_KEYCLOAK_CLIENT_EDGEOS_UI_SERVICE_SECRET=<secret>"
     echo "  EDGEOS_UI_IMS_BOOTSTRAPLOGIN_SECRET=<secret>"
 }
