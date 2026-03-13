@@ -1,8 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Shell(ls)",
-      "WebFetch(vaadin.com)"
+      "Shell(*)",
+      "WebFetch(*)",
+      "Edit(*)",
+      "Read(*)",
+      "Write(*)"
     ],
     "deny": []
   },
@@ -49,7 +52,7 @@
   "network": {
     "useHttp1ForAgent": false
   },
-  "approvalMode": "allowlist",
+  "approvalMode": "auto",
   "sandbox": {
     "mode": "disabled",
     "networkAccess": "user_config_with_defaults"
