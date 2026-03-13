@@ -1,0 +1,61 @@
+{
+  "permissions": {
+    "allow": [
+      "Shell(ls)",
+      "WebFetch(vaadin.com)"
+    ],
+    "deny": []
+  },
+  "version": 1,
+  "editor": {
+    "vimMode": false
+  },
+  "display": {
+    "showLineNumbers": false,
+    "showThinkingBlocks": false,
+    "showStatusIndicators": true
+  },
+  "model": {
+    "modelId": "composer-1.5",
+    "displayModelId": "composer-1.5",
+    "displayName": "Composer 1.5",
+    "displayNameShort": "Composer 1.5",
+    "aliases": [],
+    "maxMode": false
+  },
+  "bedrock": {
+    "enabled": true,
+    "mode": "team-role",
+    "region": "us-east-1",
+    "testModel": "us.anthropic.claude-sonnet-4-20250514-v1:0",
+    "teamRoleArn": "arn:aws:iam::535294144332:role/CursorBedrockAccess",
+    "teamExternalId": "cursor-f2ac7736-5ce5-4091-9e64-4b41ed2ee280"
+  },
+  "hasChangedDefaultModel": false,
+  "maxMode": false,
+  "privacyCache": {
+    "ghostMode": true,
+    "privacyMode": 2,
+    "updatedAt": 1773410331924
+  },
+  "authInfo": {
+    "email": "szechuan.lai@illumina.com",
+    "displayName": "Sze Chuan Lai",
+    "teamId": 16124675,
+    "teamName": "Illumina Cursor Prod",
+    "userId": 325090029,
+    "authId": "auth0|user_01KHC2NA50BXRJG733HHFZG2ZA"
+  },
+  "network": {
+    "useHttp1ForAgent": false
+  },
+  "approvalMode": "allowlist",
+  "sandbox": {
+    "mode": "disabled",
+    "networkAccess": "user_config_with_defaults"
+  },
+  "attribution": {
+    "attributeCommitsToAgent": true,
+    "attributePRsToAgent": true
+  }
+}
