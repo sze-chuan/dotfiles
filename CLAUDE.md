@@ -14,6 +14,8 @@ I am running a MacOS/Linux system and need help with configuration, setup, and a
 | Linux desktop | Omarchy (Arch-based) | Personal | Personal use only |
 | Linux server | Oracle Enterprise Linux 9 | Work | Illumina / EdgeOS development |
 
+Profile is determined by the `is_work` chezmoi parameter, not OS.
+
 - **Home Directory**: $HOME
 - **Working Directory**: Check with `pwd` before making assumptions
 
@@ -125,11 +127,9 @@ My dotfiles are managed with chezmoi and backed up to GitHub at `sze-chuan/dotfi
 
 ### Work/personal profiles
 
-- **macOS** (Apple Silicon) — always work
-- **Omarchy** (Arch-based, `os-release` ID: `arch`) — always personal
-- **Oracle Enterprise Linux 9** (`os-release` ID: `ol`) — always work
-- Profile is auto-detected in `.chezmoi.toml.tmpl` via OS/distro ID; unknown distros prompt on `chezmoi init`
+- Profile is set via the `is_work` boolean parameter, prompted once during `chezmoi init` and persisted in `~/.config/chezmoi/chezmoi.toml`
 - Work-specific configs (work-aliases, work-functions, `.env`) are gated behind `{{ .is_work }}` in templates and `.chezmoiignore`
+- To change profile on an existing machine, update `is_work` in `~/.config/chezmoi/chezmoi.toml` and run `chezmoi apply`
 - Reference chezmoi's [user guide](https://www.chezmoi.io/user-guide/command-overview/) for managing profiles
 
 ### After modifying configuration files

@@ -1,16 +1,4 @@
-{{- $is_work := false -}}
-{{- if eq .chezmoi.os "darwin" -}}
-{{- /* macOS is always work (Apple Silicon) */}}
-{{-   $is_work = true -}}
-{{- else if eq .chezmoi.osRelease.id "ol" -}}
-{{- /* Oracle Enterprise Linux 9 is work */}}
-{{-   $is_work = true -}}
-{{- else if eq .chezmoi.osRelease.id "arch" -}}
-{{- /* Omarchy (Arch-based) is personal */}}
-{{-   $is_work = false -}}
-{{- else -}}
-{{-   $is_work = promptBoolOnce . "is_work" "Is this a work machine" -}}
-{{- end }}
+{{- $is_work := promptBoolOnce . "is_work" "Is this a work machine" -}}
 
 [data]
   is_work = {{ $is_work }}
