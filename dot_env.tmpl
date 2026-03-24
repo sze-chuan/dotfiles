@@ -2,4 +2,6 @@
 RAINDROP_TOKEN={{ .raindrop_token | quote }}
 {{ if .is_work -}}
 JIRA_PAT={{ .jira.pat | quote }}
+KUBECONFIG="/etc/rancher/k3s/k3s.yaml"
+ARTIFACTORY_APIKEY={{ .artifactory.apikey | quote }}
 {{- end }}
