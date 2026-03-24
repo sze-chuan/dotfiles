@@ -42,3 +42,8 @@ alias krh='kubectl rollout history deployment'
 
 alias kpf='kubectl port-forward'
 
+# EdgeOS development
+alias reset='make helm-uninstall clean build load helm-integration'
+alias install='make clean build load helm-integration'
+alias helm-reset='make helm-uninstall helm-integration'
+alias cbl='make clean build load'
