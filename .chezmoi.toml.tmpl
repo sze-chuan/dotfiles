@@ -1,5 +1,8 @@
 {{- $is_work := promptBoolOnce . "is_work" "Is this a work machine" -}}
 
+[chezmoi]
+  remove = true
+
 [data]
   is_work = {{ $is_work }}
   raindrop_token = {{ promptStringOnce . "raindrop_token" "Raindrop.io API token" | quote }}
