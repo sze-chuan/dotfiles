@@ -92,7 +92,7 @@ Build the issue body using the template structure:
 ### 5. Present draft to user
 
 Show the user:
-- Proposed issue **title**: `<TICKET-KEY> <ticket summary>`
+- Proposed issue **title**: `<ticket summary>`
 - Proposed issue **body**: the populated template
 
 Ask:
@@ -108,7 +108,7 @@ Once the user confirms, create the issue:
 ```bash
 gh issue create \
   --repo illumina/ui-ninjas-playbook \
-  --title "<TICKET-KEY> <summary>" \
+  --title "<summary>" \
   --body "$(cat <<'EOF'
 <populated body>
 EOF
@@ -128,4 +128,4 @@ Output the created issue URL so the user can review it.
 - Do not fabricate content — only use what is present in the Jira ticket
 - If a section cannot be inferred from the ticket, use a clear placeholder (e.g. `_To be defined_`) rather than guessing
 - Keep each section concise — bullet points are preferred over long paragraphs
-- The issue title must always include the Jira ticket key as a prefix
+- The issue title must not include the Jira ticket key
