@@ -50,6 +50,13 @@ eval "$(mise activate zsh)"
 [[ -f "$XDG_CONFIG_HOME/zsh/work-aliases.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/work-aliases.zsh"
 [[ -f "$XDG_CONFIG_HOME/zsh/work-functions.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/work-functions.zsh"
 {{- end }}
+{{- if .is_work_server }}
+# Ensure SSH agent is running and load all private keys
+[[ -z "$SSH_AUTH_SOCK" ]] && eval "$(ssh-agent -s)" > /dev/null
+for key in ~/.ssh/*; do
+  [[ -f "$key" && "$key" != *.pub ]] && grep -q "PRIVATE KEY" "$key" 2>/dev/null && ssh-add "$key" 2>/dev/null
+done
+{{- end }}
 
 if [[ "$TERM_PROGRAM" == "vscode" ]] && command -v code &>/dev/null; then
   . "$(code --locate-shell-integration-path zsh)"

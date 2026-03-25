@@ -1,10 +1,15 @@
 {{- $is_work := promptBoolOnce . "is_work" "Is this a work machine" -}}
+{{- $is_work_server := false -}}
+{{- if $is_work -}}
+{{-   $is_work_server = promptBoolOnce . "is_work_server" "Is this a work server (Linux)" -}}
+{{- end -}}
 
 [chezmoi]
   remove = true
 
 [data]
   is_work = {{ $is_work }}
+  is_work_server = {{ $is_work_server }}
   raindrop_token = {{ promptStringOnce . "raindrop_token" "Raindrop.io API token" | quote }}
 
 {{- if $is_work }}
