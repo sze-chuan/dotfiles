@@ -16,4 +16,7 @@
 
 [data.jira]
   pat = {{ promptStringOnce . "jira_pat" "Jira personal access token" | quote }}
+
+[data.artifactory]
+  apikey = {{ promptStringOnce . "artifactory_apikey" "Artifactory API key" | quote }}
 {{- end }}
