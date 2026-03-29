@@ -56,6 +56,21 @@ eval "$(mise activate zsh)"
 for key in ~/.ssh/*; do
   [[ -f "$key" && "$key" != *.pub ]] && grep -q "PRIVATE KEY" "$key" 2>/dev/null && ssh-add "$key" 2>/dev/null
 done
+{{- else if not .is_work }}
+# SSH agent — reuse existing agent across terminals, start if not running
+_ssh_env="$HOME/.ssh/agent.env"
+_ssh_agent_start() {
+  ssh-agent | sed 's/^echo/#echo/' > "$_ssh_env"
+  chmod 600 "$_ssh_env"
+  source "$_ssh_env" > /dev/null
+}
+if [[ -f "$_ssh_env" ]]; then
+  source "$_ssh_env" > /dev/null
+  kill -0 "$SSH_AGENT_PID" 2>/dev/null || _ssh_agent_start
+else
+  _ssh_agent_start
+fi
+unset _ssh_env
 {{- end }}
 
 if [[ "$TERM_PROGRAM" == "vscode" ]] && command -v code &>/dev/null; then
