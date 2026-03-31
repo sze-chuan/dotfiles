@@ -290,31 +290,31 @@ connect-ui-dev() {
 
 # Upgrade EdgeOS platform on a remote host
 up-eos() {
-    if [ -z "$1" ] || [ -z "$2" ]; then
-        echo "Usage: up-eos <installer_version> <hostname>"
+    if [ -z "$1" ]; then
+        echo "Usage: up-eos <installer_version>"
         echo "  installer_version: The installer version (e.g. 1.2.3)"
-        echo "  hostname: The EdgeOS server hostname (without domain)"
         echo ""
         echo "Example:"
-        echo "  up-eos 1.2.3 myserver"
+        echo "  up-eos 1.2.3"
         return 1
     fi
 
     local version="$1"
-    local hostname="$2"
-    local fqdn="${hostname}.edgeos.illumina.com"
+    local fqdn="sky-p2-08.edgeos.illumina.com"
     local run_file="install_edgeos_platform-${version}-el9_sequencer2d2-com-e.run"
     local artifact_url="https://use1.artifactory.illumina.com/artifactory/generic-edgeos-run/dev/oracle9/sequencer2d2-com-e/${run_file}"
+    local dest_dir="/usr/local/illumina"
 
     echo "Connecting to ${fqdn}..."
     ssh root@"${fqdn}" "
         set -e
+        mkdir -p '${dest_dir}'
         echo 'Downloading installer ${version}...'
-        curl -LO '${artifact_url}'
+        curl -Lo '${dest_dir}/${run_file}' '${artifact_url}'
         echo 'Running installer...'
-        bash '${run_file}'
+        bash '${dest_dir}/${run_file}'
         echo 'Cleaning up...'
-        rm -f '${run_file}'
+        rm -f '${dest_dir}/${run_file}'
         echo 'Done.'
     "
 }
