@@ -319,6 +319,32 @@ up-eos() {
     "
 }
 
+# Load NextJS UI image onto an EdgeOS server
+load-nextjs() {
+    if [ -z "$1" ]; then
+        echo "Usage: load-nextjs <hostname>"
+        return 1
+    fi
+
+    local hostname="$1.edgeos.illumina.com"
+    local tar_file="edgeos-ui-nextjs_latest.tar"
+    local remote_path="/tmp/${tar_file}"
+
+    echo "Copying ${tar_file} to root@${hostname}:${remote_path}..."
+    if ! scp "$tar_file" "root@${hostname}:${remote_path}"; then
+        echo "Error: Failed to copy tar file to ${hostname}"
+        return 1
+    fi
+
+    echo "Importing image on ${hostname}..."
+    if ! ssh "root@${hostname}" "k3s ctr images import ${remote_path} && rm -f ${remote_path}"; then
+        echo "Error: Failed to import image on ${hostname}"
+        return 1
+    fi
+
+    echo "Successfully loaded NextJS image onto ${hostname}"
+}
+
 # Get Keycloak password from EdgeOS cluster
 get-kc-pw() {
     if [ -z "$1" ]; then
