@@ -288,6 +288,37 @@ connect-ui-dev() {
     echo "  EDGEOS_UI_IMS_BOOTSTRAPLOGIN_SECRET=<secret>"
 }
 
+# Upgrade EdgeOS platform on a remote host
+up-eos() {
+    if [ -z "$1" ] || [ -z "$2" ]; then
+        echo "Usage: up-eos <installer_version> <hostname>"
+        echo "  installer_version: The installer version (e.g. 1.2.3)"
+        echo "  hostname: The EdgeOS server hostname (without domain)"
+        echo ""
+        echo "Example:"
+        echo "  up-eos 1.2.3 myserver"
+        return 1
+    fi
+
+    local version="$1"
+    local hostname="$2"
+    local fqdn="${hostname}.edgeos.illumina.com"
+    local run_file="install_edgeos_platform-${version}-el9_sequencer2d2-com-e.run"
+    local artifact_url="https://use1.artifactory.illumina.com/artifactory/generic-edgeos-run/dev/oracle9/sequencer2d2-com-e/${run_file}"
+
+    echo "Connecting to ${fqdn}..."
+    ssh root@"${fqdn}" "
+        set -e
+        echo 'Downloading installer ${version}...'
+        curl -LO '${artifact_url}'
+        echo 'Running installer...'
+        bash '${run_file}'
+        echo 'Cleaning up...'
+        rm -f '${run_file}'
+        echo 'Done.'
+    "
+}
+
 # Get Keycloak password from EdgeOS cluster
 get-kc-pw() {
     if [ -z "$1" ]; then
