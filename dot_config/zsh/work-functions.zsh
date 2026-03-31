@@ -342,6 +342,12 @@ load-nextjs() {
         return 1
     fi
 
+    echo "Restarting NextJS pod on ${hostname}..."
+    if ! ssh "root@${hostname}" "kubectl rollout restart deployment/edgeos-edgeosui-nextjs"; then
+        echo "Error: Failed to restart NextJS pod on ${hostname}"
+        return 1
+    fi
+
     echo "Successfully loaded NextJS image onto ${hostname}"
 }
 
