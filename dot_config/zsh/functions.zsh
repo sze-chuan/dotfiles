@@ -13,11 +13,13 @@ GHOSTTY_LIGHT_THEME="Catppuccin Latte"
 _ghostty_set_theme() {
   local theme="$1"
   local config="${HOME}/.config/ghostty/config"
-  if grep -q '^theme\s*=' "$config" 2>/dev/null; then
-    sed -i '' "s|^theme\s*=.*|theme = ${theme}|" "$config"
+  if grep -q '^theme' "$config" 2>/dev/null; then
+    sed -i '' "s|^theme =.*|theme = ${theme}|" "$config"
   else
-    echo "theme = ${theme}" >> "$config"
+    printf '\ntheme = %s\n' "${theme}" >> "$config"
   fi
+  # Trigger reload via keybind (super+ctrl+r=reload_config must be set in ghostty config)
+  osascript -e 'tell application "System Events" to tell process "ghostty" to keystroke "r" using {command down, control down}' 2>/dev/null
   echo "Ghostty theme set to: ${theme}"
 }
 
