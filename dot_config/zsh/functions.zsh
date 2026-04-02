@@ -18,8 +18,6 @@ _ghostty_set_theme() {
   else
     printf '\ntheme = %s\n' "${theme}" >> "$config"
   fi
-  # Trigger reload via keybind (super+ctrl+r=reload_config must be set in ghostty config)
-  osascript -e 'tell application "System Events" to tell process "ghostty" to keystroke "r" using {command down, control down}' 2>/dev/null
   echo "Ghostty theme set to: ${theme}"
 }
 
