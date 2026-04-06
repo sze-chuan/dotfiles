@@ -29,7 +29,15 @@ gh pr view <PR-number> --json number,headRefName,title,body,baseRefName
 
 Extract `headRefName` (the branch to check out) and `baseRefName` (the base branch, usually `main`).
 
-### 3. Gather the diff for review
+### 3. Checkout the PR branch
+
+Fetch and checkout the PR branch:
+```bash
+git fetch origin <headRefName>
+git checkout <headRefName>
+```
+
+### 4. Gather the diff for review
 
 Get the full diff of all commits in this PR relative to the base branch:
 ```bash
@@ -42,7 +50,7 @@ Also fetch the PR description for context:
 gh pr view <PR-number> --json body,title,labels,reviewRequests
 ```
 
-### 4. Perform code review
+### 5. Perform code review
 
 Review all changes thoroughly and produce a structured code review report covering:
 
