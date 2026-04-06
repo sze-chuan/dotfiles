@@ -1,11 +1,11 @@
 ---
 name: pr-review
-description: Creates a git worktree for a PR's branch and switches the working directory to it, then performs a code review against the diff commits relative to the main branch. Uses gwt-add from ~/.config/zsh/git-worktree.zsh. Use when the user wants to review or work on a PR in an isolated worktree.
+description: Performs a code review of a pull request against the diff commits relative to the main branch. Use when the user wants to review a PR.
 ---
 
 # PR Review
 
-Create a git worktree for a pull request's branch using the `gwt-add` function from `~/.config/zsh/git-worktree.zsh`, switch the working directory into it, then perform a thorough code review of all changes relative to the main branch.
+Perform a thorough code review of all changes in a pull request relative to the main branch.
 
 ## Workflow
 
@@ -29,47 +29,7 @@ gh pr view <PR-number> --json number,headRefName,title,body,baseRefName
 
 Extract `headRefName` (the branch to check out) and `baseRefName` (the base branch, usually `main`).
 
-### 3. Fetch the remote branch
-
-Pull down the latest refs for the PR branch:
-```bash
-git fetch origin <headRefName>
-```
-
-### 4. Create the worktree
-
-Source the worktree helpers and create a new worktree tracking the remote branch:
-```bash
-source ~/.config/zsh/git-worktree.zsh && gwt-add <headRefName> origin/<headRefName>
-```
-
-- If `gwt-add` fails with "Not in a worktree-based repository", stop and tell the user to run `gwt-init` first to convert the repo, then retry.
-- If the worktree directory already exists, report the path and skip creation — the worktree was already set up.
-
-### 5. Resolve the worktree path
-
-Compute the path where the new worktree was created:
-```bash
-dirname "$(git rev-parse --show-toplevel)"
-```
-
-The new worktree lives at `<parent-dir>/<headRefName>`.
-
-### 6. Change to the new worktree
-
-Switch the working directory into the new worktree:
-```bash
-cd "<worktree-path>" && pwd
-```
-
-### 7. Confirm worktree setup
-
-Report to the user:
-- PR number and title
-- Branch name checked out
-- Full path of the new worktree (the current directory)
-
-### 8. Gather the diff for review
+### 3. Gather the diff for review
 
 Get the full diff of all commits in this PR relative to the base branch:
 ```bash
@@ -82,7 +42,7 @@ Also fetch the PR description for context:
 gh pr view <PR-number> --json body,title,labels,reviewRequests
 ```
 
-### 9. Perform code review
+### 4. Perform code review
 
 Review all changes thoroughly and produce a structured code review report covering:
 
@@ -123,7 +83,4 @@ Review all changes thoroughly and produce a structured code review report coveri
 ## Rules
 
 - Never force-push, reset, or modify the PR branch — this is a read/review checkout
-- If the repo is not in worktree structure (`.bare` not found), stop and advise running `gwt-init`
-- Always source `~/.config/zsh/git-worktree.zsh` before calling any `gwt-*` function — do not call git worktree commands directly
-- Use `origin/<headRefName>` as the base so the worktree tracks the remote branch exactly
 - Base the diff against `origin/<baseRefName>` (not just `main`) to handle PRs targeting non-main branches
