@@ -17,10 +17,12 @@ Run these in parallel:
 
 ### 2. Load the PR template
 
-Look for a PR template in the repo root:
+Look for a PR template in these locations (in order):
 ```
 .github/pull_request_template.md
 .github/PULL_REQUEST_TEMPLATE.md
+pull_request_template.md
+PULL_REQUEST_TEMPLATE.md
 ```
 
 If no template is found, use a minimal default:
