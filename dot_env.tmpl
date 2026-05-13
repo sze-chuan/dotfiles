@@ -5,4 +5,6 @@ JIRA_PAT={{ .jira.pat | quote }}
 KUBECONFIG="/etc/rancher/k3s/k3s.yaml"
 ARTIFACTORY_APIKEY={{ .artifactory.apikey | quote }}
 NPM_TOKEN={{ .artifactory.apikey | quote }}
+JENKINS_USER={{ .jenkins.user | quote }}
+JENKINS_API_TOKEN={{ .jenkins.api_token | quote }}
 {{- end }}
