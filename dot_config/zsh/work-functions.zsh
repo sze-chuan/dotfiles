@@ -290,20 +290,39 @@ connect-ui-dev() {
 
 # Upgrade EdgeOS platform on a remote host
 up-eos() {
-    if [ -z "$1" ] || [ -z "$2" ]; then
-        echo "Usage: up-eos <installer_version> <hostname>"
+    if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
+        echo "Usage: up-eos <installer_version> <hostname> <platform>"
         echo "  installer_version: The installer version (e.g. 1.2.3)"
         echo "  hostname: The short hostname (e.g. sky-p2-08)"
+        echo "  platform: The platform name (skywalker, prephero)"
         echo ""
-        echo "Example:"
-        echo "  up-eos 1.2.3 sky-p2-08"
+        echo "Examples:"
+        echo "  up-eos 1.2.3 sky-p2-08 skywalker"
+        echo "  up-eos 1.2.3 pre-p2-08 prephero"
         return 1
     fi
 
     local version="$1"
     local fqdn="$2.edgeos.illumina.com"
-    local run_file="install_edgeos_platform-${version}-el9_sequencer2d2-com-e.run"
-    local artifact_url="https://use1.artifactory.illumina.com/artifactory/generic-edgeos-run/dev/oracle9/sequencer2d2-com-e/${run_file}"
+    local platform="$3"
+    local platform_id=""
+
+    case "$platform" in
+        skywalker)
+            platform_id="sequencer2d2-com-e"
+            ;;
+        prephero)
+            platform_id="prephero"
+            ;;
+        *)
+            echo "Error: Unknown platform '${platform}'"
+            echo "Supported platforms: skywalker, prephero"
+            return 1
+            ;;
+    esac
+
+    local run_file="install_edgeos_platform-${version}-el9_${platform_id}.run"
+    local artifact_url="https://use1.artifactory.illumina.com/artifactory/generic-edgeos-run/dev/oracle9/${platform_id}/${run_file}"
     local dest_dir="/usr/local/illumina"
 
     echo "Connecting to ${fqdn}..."
