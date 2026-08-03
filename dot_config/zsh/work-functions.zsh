@@ -332,7 +332,7 @@ up-eos() {
         echo 'Downloading installer ${version}...'
         curl -Lo '${dest_dir}/${run_file}' '${artifact_url}'
         echo 'Running installer...'
-        bash '${dest_dir}/${run_file}'
+        EOS_FF_DEFAULT_TO_PROXY=false bash '${dest_dir}/${run_file}'
         echo 'Cleaning up...'
         rm -f '${dest_dir}/${run_file}'
         echo 'Done.'

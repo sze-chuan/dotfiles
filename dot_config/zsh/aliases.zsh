@@ -47,3 +47,8 @@ alias gl='git pull'
 alias gsta='git stash push'
 alias gstp='git stash pop'
 alias gp='git push'
+
+# macOS-only aliases
+if [[ "$OSTYPE" == darwin* ]]; then
+  alias bearcli='/Applications/Bear.app/Contents/MacOS/bearcli'
+fi
