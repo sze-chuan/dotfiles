@@ -294,11 +294,12 @@ up-eos() {
         echo "Usage: up-eos <installer_version> <hostname> <platform>"
         echo "  installer_version: The installer version (e.g. 1.2.3)"
         echo "  hostname: The short hostname (e.g. sky-p2-08)"
-        echo "  platform: The platform name (skywalker, prephero)"
+        echo "  platform: The platform name (skywalker, prephero, gaia)"
         echo ""
         echo "Examples:"
         echo "  up-eos 1.2.3 sky-p2-08 skywalker"
         echo "  up-eos 1.2.3 pre-p2-08 prephero"
+        echo "  up-eos 1.2.3 gaia-p2-08 gaia"
         return 1
     fi
 
@@ -314,9 +315,12 @@ up-eos() {
         prephero)
             platform_id="prephero"
             ;;
+        gaia)
+            platform_id="sequencerterra"
+            ;;
         *)
             echo "Error: Unknown platform '${platform}'"
-            echo "Supported platforms: skywalker, prephero"
+            echo "Supported platforms: skywalker, prephero, gaia"
             return 1
             ;;
     esac
