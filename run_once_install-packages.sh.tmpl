@@ -45,8 +45,9 @@ brew install --cask ghostty
 # ── Arch Linux (Omarchy / personal) ───────────────────────────────────────────
 
 # Omarchy already installs bat, eza, fzf, lazydocker, mise, and ripgrep.
-# Install only the shell and plugins managed by this repository.
+# Install the shell, plugins, and personal remote-access client managed here.
 sudo pacman -S --needed --noconfirm \
+  tailscale \
   zsh \
   zsh-autosuggestions \
   zsh-completions \
@@ -61,6 +62,13 @@ elif command -v paru >/dev/null 2>&1; then
 else
   echo "WARNING: No AUR helper found. Install yay or paru, then run:" >&2
   echo "  yay -S zsh-theme-powerlevel10k" >&2
+fi
+
+# Enable Tailscale SSH when this Omarchy machine is already connected to the tailnet.
+if command -v tailscale >/dev/null 2>&1 && tailscale status >/dev/null 2>&1; then
+  tailscale set --ssh
+else
+  echo "WARNING: Tailscale is unavailable or not connected; skipping Tailscale SSH." >&2
 fi
 
 {{ else -}}
