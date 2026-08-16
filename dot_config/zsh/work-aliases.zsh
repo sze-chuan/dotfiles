@@ -2,7 +2,14 @@
 # These aliases are sourced in .zshrc
 
 # Docker/Development
-alias spd='docker run -p 127.0.0.1:5432:5432 -d --name postgres -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=db postgres'
+spd() {
+    : "${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD before running spd}"
+    docker run -p 127.0.0.1:5432:5432 -d --name postgres \
+        -e POSTGRES_USER=user \
+        -e POSTGRES_PASSWORD \
+        -e POSTGRES_DB=db \
+        postgres
+}
 
 # Kubernetes
 alias k='kubectl'

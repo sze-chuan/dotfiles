@@ -9,6 +9,14 @@ set -e
 if ! command -v brew >/dev/null 2>&1; then
   echo "Installing Homebrew..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  if [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [ -x /usr/local/bin/brew ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  else
+    echo "Homebrew installation completed, but brew was not found on a supported path." >&2
+    exit 1
+  fi
 fi
 
 brew install \
@@ -36,29 +44,31 @@ brew install --cask ghostty
 {{ else if eq .chezmoi.osRelease.id "arch" -}}
 # ── Arch Linux (Omarchy / personal) ───────────────────────────────────────────
 
-# Official repos
+# Omarchy already installs bat, eza, fzf, lazydocker, mise, and ripgrep.
+# Install only the shell and plugins managed by this repository.
 sudo pacman -S --needed --noconfirm \
-  bat \
-  eza \
-  fzf \
-  ripgrep \
+  zsh \
   zsh-autosuggestions \
   zsh-completions \
   zsh-history-substring-search \
   zsh-syntax-highlighting
 
-# AUR packages: lazydocker, mise, powerlevel10k
+# AUR package: Powerlevel10k
 if command -v yay >/dev/null 2>&1; then
-  yay -S --needed --noconfirm lazydocker mise-bin zsh-theme-powerlevel10k
+  yay -S --needed --noconfirm zsh-theme-powerlevel10k
 elif command -v paru >/dev/null 2>&1; then
-  paru -S --needed --noconfirm lazydocker mise-bin zsh-theme-powerlevel10k
+  paru -S --needed --noconfirm zsh-theme-powerlevel10k
 else
   echo "WARNING: No AUR helper found. Install yay or paru, then run:" >&2
-  echo "  yay -S lazydocker mise-bin zsh-theme-powerlevel10k" >&2
+  echo "  yay -S zsh-theme-powerlevel10k" >&2
 fi
 
 {{ else -}}
 # ── Oracle Enterprise Linux 9 / other Linux ───────────────────────────────────
+
+if ! command -v zsh >/dev/null 2>&1 && command -v dnf >/dev/null 2>&1; then
+  sudo dnf install -y zsh
+fi
 
 if ! command -v brew >/dev/null 2>&1; then
   echo "Installing Homebrew..."

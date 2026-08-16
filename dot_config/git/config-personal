@@ -1,8 +1,0 @@
-[credential "https://github.com"]
-	helper =
-	helper = !/opt/homebrew/bin/gh auth git-credential
-
-[user]
-	name = Sze Chuan
-	email = sze.chuan@gmail.com
-

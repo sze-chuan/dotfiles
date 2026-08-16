@@ -1,10 +1,10 @@
 # Always ignore repo-level files
-CLAUDE.md
+AGENTS.md
 IMPROVEMENTS.md
 
 # Ghostty is macOS-only
 {{ if ne .chezmoi.os "darwin" }}
-.config/ghostty
+.config/ghostty/**
 {{ end }}
 
 # Work-specific files only on work machines
@@ -12,4 +12,8 @@ IMPROVEMENTS.md
 .config/zsh/work-aliases.zsh
 .config/zsh/work-functions.zsh
 .config/cursor/cli-config.json
+.config/agents/skills/acceptance-criteria/**
+.config/agents/skills/create-pr/**
+.config/agents/skills/pr-review/**
+.config/agents/skills/sprint-summary/**
 {{ end }}

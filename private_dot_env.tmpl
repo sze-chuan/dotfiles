@@ -1,10 +1,9 @@
-# Credentials — actual values set in ~/.config/chezmoi/chezmoi.toml
+# Credentials — actual values are set in ~/.config/chezmoi/chezmoi.toml.
+# The private_ source attribute restricts the deployed ~/.env to the owner.
 RAINDROP_TOKEN={{ .raindrop_token | quote }}
 {{ if .is_work -}}
 JIRA_PAT={{ .jira.pat | quote }}
 KUBECONFIG="/etc/rancher/k3s/k3s.yaml"
 ARTIFACTORY_APIKEY={{ .artifactory.apikey | quote }}
 NPM_TOKEN={{ .artifactory.apikey | quote }}
-JENKINS_USER={{ .jenkins.user | quote }}
-JENKINS_API_TOKEN={{ .jenkins.api_token | quote }}
 {{- end }}

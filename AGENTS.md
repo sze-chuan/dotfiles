@@ -12,6 +12,7 @@ I am running a MacOS/Linux system and need help with configuration, setup, and a
 |---|---|---|---|
 | MacBook (Apple Silicon) | macOS 15.7 | Work | Illumina / EdgeOS development |
 | Linux desktop | Omarchy (Arch-based) | Personal | Personal use only |
+| Personal Mac | macOS | Personal | Personal use |
 | Linux server | Oracle Enterprise Linux 9 | Work | Illumina / EdgeOS development |
 
 Profile is determined by the `is_work` chezmoi parameter, not OS.
@@ -127,8 +128,8 @@ My dotfiles are managed with chezmoi and backed up to GitHub at `sze-chuan/dotfi
 
 ### Work/personal profiles
 
-- Profile is set via the `is_work` boolean parameter, prompted once during `chezmoi init` and persisted in `~/.config/chezmoi/chezmoi.toml`
-- Work-specific configs (work-aliases, work-functions, `.env`) are gated behind `{{ .is_work }}` in templates and `.chezmoiignore`
+- Profile is set via the `is_work` boolean parameter, prompted once during `chezmoi init` and persisted in `~/.config/chezmoi/chezmoi.toml`. It is not inferred from the operating system.
+- Work-specific configs (work-aliases, work-functions, Cursor CLI configuration, and all agent skills except Raindrop) are gated behind `{{ .is_work }}` in templates and `.chezmoiignore`. `.env` is deployed privately on all profiles for Raindrop and includes additional credentials only on work profiles.
 - To change profile on an existing machine, update `is_work` in `~/.config/chezmoi/chezmoi.toml` and run `chezmoi apply`
 - Reference chezmoi's [user guide](https://www.chezmoi.io/user-guide/command-overview/) for managing profiles
 
@@ -145,7 +146,7 @@ This applies to:
 - Editing configuration files
 - Creating new configuration files
 - Deleting configuration files
-- Modifying CLAUDE.md itself
+- Modifying AGENTS.md itself
 - Any file operation in tracked directories
 
 Replace "Your commit message" with a description of your changes.

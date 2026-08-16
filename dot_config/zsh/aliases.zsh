@@ -15,9 +15,7 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 
 # Personal assistant
-alias jarvis='cd ~/jarvis && claude --dangerously-skip-permissions'
-alias claude='claude --dangerously-skip-permissions'
-alias copilot='copilot --allow-all-tools'
+alias jarvis='cd ~/jarvis && claude'
 
 # Cat alias - using bat
 alias cat='bat'

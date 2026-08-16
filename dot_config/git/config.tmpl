@@ -1,12 +1,18 @@
-[credential "https://git.illumina.com"]
-	provider = github
 [user]
 	name = Sze Chuan
+	{{- if .is_work }}
 	email = szechuan.lai@illumina.com
-[includeIf "gitdir:~/personal-repos/"]
-	path = config-personal
-[includeIf "gitdir:~/.local/share/chezmoi/"]
-	path = config-personal
+{{- else }}
+	email = sze.chuan@gmail.com
+{{- end }}
+{{- if .is_work }}
+[credential "https://git.illumina.com"]
+	provider = github
+{{- else }}
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+{{- end }}
 [init]
 	defaultBranch = main
 [core]
