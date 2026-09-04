@@ -1,0 +1,66 @@
+# Omarchy environment must be available to non-interactive shells too.
+[[ -r /usr/share/omarchy/default/bash/env-bootstrap ]] && source /usr/share/omarchy/default/bash/env-bootstrap
+
+# Environment shared by interactive shells and their subprocesses.
+export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+export XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
+export XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
+export RIPGREP_CONFIG_PATH="${XDG_CONFIG_HOME}/ripgrep/ripgreprc"
+export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
+export FZF_DEFAULT_OPTS='--height=40% --layout=reverse --border --info=inline'
+
+for path_entry in "$HOME/.opencode/bin" "$HOME/.amp/bin" "$HOME/.local/bin"; do
+  case ":$PATH:" in
+    *":$path_entry:"*) ;;
+    *) PATH="$path_entry:$PATH" ;;
+  esac
+done
+export PATH
+unset path_entry
+
+[[ $- != *i* ]] && return
+
+# Preserve Omarchy's aliases, functions, completions, mise, and Starship setup.
+if [[ -r "${OMARCHY_PATH:-/usr/share/omarchy}/default/bash/rc" ]]; then
+  source "${OMARCHY_PATH:-/usr/share/omarchy}/default/bash/rc"
+elif command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate bash)"
+fi
+
+# Source custom aliases and functions after Omarchy so local definitions win.
+[[ -f "$XDG_CONFIG_HOME/zsh/aliases.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/aliases.zsh"
+[[ -f "$XDG_CONFIG_HOME/zsh/functions.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/functions.zsh"
+{{- if .is_work }}
+[[ -f "$HOME/.env" ]] && source "$HOME/.env"
+[[ -f "$XDG_CONFIG_HOME/zsh/work-aliases.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/work-aliases.zsh"
+[[ -f "$XDG_CONFIG_HOME/zsh/work-functions.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/work-functions.zsh"
+{{- end }}
+{{- if .is_work_server }}
+
+# Ensure SSH agent is running and load all private keys.
+[[ -z "$SSH_AUTH_SOCK" ]] && eval "$(ssh-agent -s)" >/dev/null
+for key in "$HOME"/.ssh/*; do
+  [[ -f "$key" && "$key" != *.pub ]] && grep -q "PRIVATE KEY" "$key" 2>/dev/null && ssh-add "$key" 2>/dev/null
+done
+unset key
+{{- else if not .is_work }}
+
+# Reuse one SSH agent across terminals, starting it when necessary.
+_ssh_env="$HOME/.ssh/agent.env"
+_ssh_agent_start() {
+  ssh-agent | sed 's/^echo/#echo/' >"$_ssh_env"
+  chmod 600 "$_ssh_env"
+  source "$_ssh_env" >/dev/null
+}
+if [[ -f "$_ssh_env" ]]; then
+  source "$_ssh_env" >/dev/null
+  kill -0 "$SSH_AGENT_PID" 2>/dev/null || _ssh_agent_start
+else
+  _ssh_agent_start
+fi
+unset _ssh_env
+{{- end }}
+
+if [[ "$TERM_PROGRAM" == "vscode" ]] && command -v code >/dev/null 2>&1; then
+  source "$(code --locate-shell-integration-path bash)"
+fi

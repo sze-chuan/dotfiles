@@ -1,8 +1,11 @@
-# General aliases - Used across all systems
-# These aliases are sourced in .zshrc
+# General aliases shared by Bash and Zsh.
 
 # Shell management
-alias reload!='. ~/.zshrc'
+if [[ -n "$ZSH_VERSION" ]]; then
+  alias reload!='source ~/.zshrc'
+else
+  alias reload!='source ~/.bashrc'
+fi
 alias cls='clear'
 
 # Common tools

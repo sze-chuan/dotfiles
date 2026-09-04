@@ -22,8 +22,9 @@ configuration behavior, not the profile.
 ## Daily Workflow
 
 ```sh
-# Edit a managed file
-chezmoi edit ~/.zshrc
+# Edit the managed shell configuration
+chezmoi edit ~/.bashrc  # Linux
+chezmoi edit ~/.zshrc   # macOS
 
 # Apply changes
 chezmoi apply
@@ -37,10 +38,11 @@ git add . && git commit -m "..." && git push && chezmoi apply
 
 | Path | Purpose |
 |---|---|
-| `dot_zshrc.tmpl` | Zsh config (OS-conditional via chezmoi template) |
-| `dot_zshenv` | Env vars available to all processes (XDG, ripgrep, fzf) |
-| `dot_zprofile` | Login shell PATH |
-| `dot_config/zsh/` | Aliases, functions, git worktree helpers |
+| `dot_bashrc.tmpl` | Linux Bash config layered on top of Omarchy defaults |
+| `dot_zshrc.tmpl` | macOS Zsh config |
+| `dot_zshenv` | macOS Zsh environment variables (XDG, ripgrep, fzf) |
+| `dot_zprofile` | macOS login shell PATH |
+| `dot_config/zsh/` | Aliases and functions shared by Bash and Zsh |
 | `dot_config/mise/config.toml` | mise global tool versions |
 | `dot_config/ripgrep/ripgreprc` | ripgrep defaults (smart-case, hidden files) |
 | `dot_config/bat/config` | bat theme and style |

@@ -1,5 +1,4 @@
-# Work-specific aliases - Used on both MacOS and Linux
-# These aliases are sourced in .zshrc
+# Work-specific aliases shared by Bash and Zsh.
 
 # Docker/Development
 spd() {

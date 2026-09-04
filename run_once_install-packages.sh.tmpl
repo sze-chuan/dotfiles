@@ -42,27 +42,12 @@ brew install \
 brew install --cask ghostty
 
 {{ else if eq .chezmoi.osRelease.id "arch" -}}
-# ── Arch Linux (Omarchy / personal) ───────────────────────────────────────────
+# ── Arch Linux (Omarchy) ──────────────────────────────────────────────────────
 
 # Omarchy already installs bat, eza, fzf, lazydocker, mise, and ripgrep.
-# Install the shell, plugins, and personal remote-access client managed here.
-sudo pacman -S --needed --noconfirm \
-  tailscale \
-  zsh \
-  zsh-autosuggestions \
-  zsh-completions \
-  zsh-history-substring-search \
-  zsh-syntax-highlighting
-
-# AUR package: Powerlevel10k
-if command -v yay >/dev/null 2>&1; then
-  yay -S --needed --noconfirm zsh-theme-powerlevel10k
-elif command -v paru >/dev/null 2>&1; then
-  paru -S --needed --noconfirm zsh-theme-powerlevel10k
-else
-  echo "WARNING: No AUR helper found. Install yay or paru, then run:" >&2
-  echo "  yay -S zsh-theme-powerlevel10k" >&2
-fi
+# Install the remote-access client managed here. Omarchy's Bash and Starship
+# configuration remain the shell defaults.
+sudo pacman -S --needed --noconfirm tailscale
 
 # Enable Tailscale SSH when this Omarchy machine is already connected to the tailnet.
 if command -v tailscale >/dev/null 2>&1 && tailscale status >/dev/null 2>&1; then
@@ -73,10 +58,6 @@ fi
 
 {{ else -}}
 # ── Oracle Enterprise Linux 9 / other Linux ───────────────────────────────────
-
-if ! command -v zsh >/dev/null 2>&1 && command -v dnf >/dev/null 2>&1; then
-  sudo dnf install -y zsh
-fi
 
 if ! command -v brew >/dev/null 2>&1; then
   echo "Installing Homebrew..."
@@ -90,12 +71,7 @@ brew install \
   fzf \
   lazydocker \
   mise \
-  powerlevel10k \
-  ripgrep \
-  zsh-autosuggestions \
-  zsh-completions \
-  zsh-history-substring-search \
-  zsh-syntax-highlighting
+  ripgrep
 
 {{ if .is_work -}}
 brew install \

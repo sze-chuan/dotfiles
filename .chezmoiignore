@@ -2,6 +2,16 @@
 AGENTS.md
 IMPROVEMENTS.md
 
+# Bash is Linux-only; Zsh configuration is macOS-only
+{{ if eq .chezmoi.os "darwin" }}
+.bashrc
+{{ else }}
+.zshrc
+.zshenv
+.zprofile
+.p10k.zsh
+{{ end }}
+
 # Ghostty is macOS-only
 {{ if ne .chezmoi.os "darwin" }}
 .config/ghostty/**

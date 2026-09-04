@@ -27,7 +27,8 @@ gwt-init() {
     echo "Current location: $repo_root"
     echo "New structure: $repo_root/.bare/ + $repo_root/$main_branch/"
     echo
-    read -q "REPLY?Continue? (y/n) "
+    printf "Continue? (y/n) "
+    read -r REPLY
     echo
 
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then

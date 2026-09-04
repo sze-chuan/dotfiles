@@ -26,10 +26,11 @@ profile from the operating system.
 
 ## Platform rules
 
-- **macOS:** use Homebrew.
+- **macOS:** use Homebrew and Zsh.
 - **Omarchy:** use pacman/yay only; do not use Homebrew. Preserve Omarchy's
-  Ghostty configuration—do not manage `~/.config/ghostty` there.
-- **OEL 9:** prefer dnf and use Homebrew only when needed.
+  Ghostty configuration—do not manage `~/.config/ghostty` there. Keep Bash as
+  the shell and layer user configuration after Omarchy's defaults.
+- **OEL 9:** prefer dnf and use Homebrew only when needed. Use Bash.
 - Never modify `/usr/share/`, `/etc/`, or other system configuration without
   explicit user approval.
 

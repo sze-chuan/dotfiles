@@ -1,5 +1,4 @@
-# Work-specific functions - Used on both MacOS and Linux
-# These functions are sourced in .zshrc
+# Work-specific functions shared by Bash and Zsh.
 
 # Access Kubernetes cluster with k9s
 k9h() {

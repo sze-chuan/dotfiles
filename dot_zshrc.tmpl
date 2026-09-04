@@ -6,27 +6,12 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # Zsh plugins (installed via package manager)
-{{- if eq .chezmoi.os "darwin" }}
 fpath=(/opt/homebrew/share/zsh-completions $fpath)
 autoload -Uz compinit && compinit -u
 source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
-{{- else if eq .chezmoi.osRelease.id "arch" }}
-autoload -Uz compinit && compinit
-source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
-source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-{{- else }}
-fpath=(${HOMEBREW_PREFIX:-/home/linuxbrew/.linuxbrew}/share/zsh-completions $fpath)
-autoload -Uz compinit && compinit
-source ${HOMEBREW_PREFIX:-/home/linuxbrew/.linuxbrew}/share/powerlevel10k/powerlevel10k.zsh-theme
-source ${HOMEBREW_PREFIX:-/home/linuxbrew/.linuxbrew}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source ${HOMEBREW_PREFIX:-/home/linuxbrew/.linuxbrew}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source ${HOMEBREW_PREFIX:-/home/linuxbrew/.linuxbrew}/share/zsh-history-substring-search/zsh-history-substring-search.zsh
-{{- end }}
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 
@@ -76,4 +61,3 @@ unset _ssh_env
 if [[ "$TERM_PROGRAM" == "vscode" ]] && command -v code &>/dev/null; then
   . "$(code --locate-shell-integration-path zsh)"
 fi
-
