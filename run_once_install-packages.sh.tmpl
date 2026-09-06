@@ -23,6 +23,7 @@ brew install \
   bat \
   eza \
   fzf \
+  gh \
   lazydocker \
   mise \
   powerlevel10k \
@@ -46,9 +47,9 @@ brew install --cask ghostty
 # ── Arch Linux (Omarchy) ──────────────────────────────────────────────────────
 
 # Omarchy already installs bat, eza, fzf, lazydocker, mise, and ripgrep.
-# Install the remote-access services managed here. Omarchy's Bash and Starship
-# configuration remain the shell defaults.
-sudo pacman -S --needed --noconfirm openssh tailscale
+# Install the remote-access services and GitHub CLI managed here. Omarchy's Bash
+# and Starship configuration remain the shell defaults.
+sudo pacman -S --needed --noconfirm github-cli openssh tailscale
 sudo systemctl enable sshd.service
 
 # Use Omarchy's installer to install 1Password and its CLI.
