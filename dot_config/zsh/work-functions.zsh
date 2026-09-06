@@ -1,24 +1,5 @@
 # Work-specific functions shared by Bash and Zsh.
 
-# Access Kubernetes cluster with k9s
-k9h() {
-    if [ -z "$1" ]; then
-        echo "Usage: k9h <hostname>"
-        return 1
-    fi
-
-    local hostname="$1"
-    local kubeconfig="${HOME}/.kube/${hostname}.yaml"
-
-    # Create .kube directory if it doesn't exist
-    mkdir -p "${HOME}/.kube"
-
-    # Fetch and configure kubeconfig, then launch k9s
-    ssh root@"${hostname}".edgeos.illumina.com "cat /etc/rancher/k3s/k3s.yaml" | \
-        yq ".clusters[0].cluster.server=\"https://${hostname}.edgeos.illumina.com:6443\"" > "${kubeconfig}" && \
-        k9s --kubeconfig "${kubeconfig}"
-}
-
 # Copy files from server using sftp
 cfs() {
     # Parse arguments
@@ -344,38 +325,6 @@ up-eos() {
         rm -f '${dest_dir}/${run_file}'
         echo 'Done.'
     "
-}
-
-# Load NextJS UI image onto an EdgeOS server
-load-nextjs() {
-    if [ -z "$1" ]; then
-        echo "Usage: load-nextjs <hostname>"
-        return 1
-    fi
-
-    local hostname="$1.edgeos.illumina.com"
-    local tar_file="edgeos-ui-nextjs_latest.tar"
-    local remote_path="/tmp/${tar_file}"
-
-    echo "Copying ${tar_file} to root@${hostname}:${remote_path}..."
-    if ! scp "$tar_file" "root@${hostname}:${remote_path}"; then
-        echo "Error: Failed to copy tar file to ${hostname}"
-        return 1
-    fi
-
-    echo "Importing image on ${hostname}..."
-    if ! ssh "root@${hostname}" "k3s ctr images import ${remote_path} && rm -f ${remote_path}"; then
-        echo "Error: Failed to import image on ${hostname}"
-        return 1
-    fi
-
-    echo "Restarting NextJS pod on ${hostname}..."
-    if ! ssh "root@${hostname}" "kubectl rollout restart deployment/edgeos-edgeosui-nextjs"; then
-        echo "Error: Failed to restart NextJS pod on ${hostname}"
-        return 1
-    fi
-
-    echo "Successfully loaded NextJS image onto ${hostname}"
 }
 
 # Get Keycloak password from EdgeOS cluster
