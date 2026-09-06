@@ -21,7 +21,6 @@ IMPROVEMENTS.md
 {{ if not .is_work }}
 .config/zsh/work-aliases.zsh
 .config/zsh/work-functions.zsh
-.config/cursor/cli-config.json
 .config/agents/skills/acceptance-criteria/**
 .config/agents/skills/create-pr/**
 .config/agents/skills/pr-review/**

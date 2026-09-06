@@ -1,12 +1,11 @@
 # Dotfiles
 
-Personal dotfiles managed with [chezmoi](https://chezmoi.io), supporting four machines across two profiles.
+Personal dotfiles managed with [chezmoi](https://chezmoi.io), supporting macOS and Omarchy across two profiles.
 
 | Machine | OS | Profile |
 |---|---|---|
 | MacBook (Apple Silicon) | macOS 15 | Work |
-| Linux server | Oracle Enterprise Linux 9 | Work |
-| Linux desktop | Omarchy (Arch) | Personal |
+| Linux desktop | Omarchy (Arch) | Work or Personal |
 | Personal Mac | macOS | Personal |
 
 ## Fresh Machine Setup
@@ -53,13 +52,11 @@ git add . && git commit -m "..." && git push && chezmoi apply
 
 ## Profiles
 
-Work-specific files (`work-aliases.zsh`, `work-functions.zsh`, Cursor CLI
-configuration, and all agent skills except Raindrop) are gated in
-`.chezmoiignore`. `.env` is deployed on all profiles for Raindrop and includes
-additional credentials only on work profiles.
+Work-specific aliases, functions, and agent skills (except Raindrop) are gated
+in `.chezmoiignore`. `.env` is deployed on all profiles for Raindrop and
+includes additional credentials only on work profiles.
 
 ## Requirements
 
 - **macOS**: Homebrew, then `brew install chezmoi`
 - **Arch**: `pacman -S chezmoi`
-- **OEL9**: `dnf install chezmoi` or `brew install chezmoi`

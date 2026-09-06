@@ -44,9 +44,14 @@ brew install --cask ghostty
 # ── Arch Linux (Omarchy) ──────────────────────────────────────────────────────
 
 # Omarchy already installs bat, eza, fzf, lazydocker, mise, and ripgrep.
-# Install the remote-access client managed here. Omarchy's Bash and Starship
+# Install the remote-access services managed here. Omarchy's Bash and Starship
 # configuration remain the shell defaults.
-sudo pacman -S --needed --noconfirm tailscale
+sudo pacman -S --needed --noconfirm openssh tailscale
+sudo systemctl enable sshd.service
+
+{{ if .is_work -}}
+sudo pacman -S --needed --noconfirm helm yq
+{{ end -}}
 
 # Enable Tailscale SSH when this Omarchy machine is already connected to the tailnet.
 if command -v tailscale >/dev/null 2>&1 && tailscale status >/dev/null 2>&1; then
@@ -56,28 +61,8 @@ else
 fi
 
 {{ else -}}
-# ── Oracle Enterprise Linux 9 / other Linux ───────────────────────────────────
-
-if ! command -v brew >/dev/null 2>&1; then
-  echo "Installing Homebrew..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
-
-brew install \
-  bat \
-  eza \
-  fzf \
-  lazydocker \
-  mise \
-  ripgrep
-
-{{ if .is_work -}}
-brew install \
-  helm \
-  k9s \
-  yq
-{{ end -}}
+echo "Unsupported operating system. This bootstrap supports macOS and Omarchy (Arch Linux) only." >&2
+exit 1
 
 {{ end -}}
 
