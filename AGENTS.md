@@ -8,8 +8,7 @@ The source checkout is `~/repos/dotfiles`.
 | Machine | OS | Profile |
 |---|---|---|
 | MacBook (Apple Silicon) | macOS | Work |
-| Linux server | Oracle Enterprise Linux 9 | Work |
-| Linux desktop | Omarchy (Arch) | Personal |
+| Linux desktop | Omarchy (Arch) | Personal or Work |
 | Personal Mac | macOS | Personal |
 
 The `is_work` chezmoi parameter selects the profile; it is prompted once during
@@ -30,7 +29,6 @@ profile from the operating system.
 - **Omarchy:** use pacman/yay only; do not use Homebrew. Preserve Omarchy's
   Ghostty configuration—do not manage `~/.config/ghostty` there. Keep Bash as
   the shell and layer user configuration after Omarchy's defaults.
-- **OEL 9:** prefer dnf and use Homebrew only when needed. Use Bash.
 - Never modify `/usr/share/`, `/etc/`, or other system configuration without
   explicit user approval.
 

@@ -23,7 +23,6 @@ fi
 [[ -f "$XDG_CONFIG_HOME/zsh/work-aliases.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/work-aliases.zsh"
 [[ -f "$XDG_CONFIG_HOME/zsh/work-functions.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/work-functions.zsh"
 {{- end }}
-{{- if not .is_work }}
 
 # Reuse one SSH agent across terminals, starting it when necessary.
 _ssh_env="$HOME/.ssh/agent.env"
@@ -39,7 +38,6 @@ else
   _ssh_agent_start
 fi
 unset _ssh_env
-{{- end }}
 
 if [[ "$TERM_PROGRAM" == "vscode" ]] && command -v code >/dev/null 2>&1; then
   source "$(code --locate-shell-integration-path bash)"
