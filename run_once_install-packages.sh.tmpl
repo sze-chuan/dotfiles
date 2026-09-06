@@ -38,6 +38,8 @@ brew install \
   yq
 {{ end -}}
 
+curl -fsSL https://herdr.dev/install.sh | sh
+
 brew install --cask ghostty
 
 {{ else if eq .chezmoi.osRelease.id "arch" -}}
@@ -48,6 +50,14 @@ brew install --cask ghostty
 # configuration remain the shell defaults.
 sudo pacman -S --needed --noconfirm openssh tailscale
 sudo systemctl enable sshd.service
+
+# Use Omarchy's installer to install 1Password and its CLI.
+omarchy-install-service-1password
+
+# Amp installs to ~/.amp/bin and links its executable into ~/.local/bin.
+curl -fsSL https://ampcode.com/install.sh | env PATH="$HOME/.local/bin:$PATH" bash
+
+curl -fsSL https://herdr.dev/install.sh | sh
 
 {{ if .is_work -}}
 sudo pacman -S --needed --noconfirm helm yq
