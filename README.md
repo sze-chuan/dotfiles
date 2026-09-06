@@ -44,7 +44,7 @@ git add . && git commit -m "..." && git push && chezmoi apply
 | `dot_config/zsh/` | Aliases and functions shared by Bash and Zsh |
 | `dot_config/mise/config.toml` | mise global tool versions |
 | `dot_config/ripgrep/ripgreprc` | macOS ripgrep defaults (smart-case, hidden files) |
-| `dot_config/bat/config` | bat theme and style |
+| `dot_config/bat/config` | macOS Bat theme and style |
 | `dot_config/ghostty/config.tmpl` | Ghostty split keybindings (macOS only) |
 | `private_dot_env.tmpl` | Raindrop credentials on all profiles; work credentials on work profiles |
 | `.chezmoiignore` | OS/profile-based file gating |

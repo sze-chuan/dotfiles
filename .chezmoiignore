@@ -12,8 +12,9 @@ IMPROVEMENTS.md
 .p10k.zsh
 {{ end }}
 
-# Ghostty is macOS-only
+# Terminal-tool configuration is macOS-only
 {{ if ne .chezmoi.os "darwin" }}
+.config/bat/**
 .config/ghostty/**
 .config/ripgrep/**
 {{ end }}
