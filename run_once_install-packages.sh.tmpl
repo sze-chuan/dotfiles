@@ -47,11 +47,15 @@ brew install --cask ghostty
 # ── Arch Linux (Omarchy) ──────────────────────────────────────────────────────
 
 # Omarchy already installs bat, eza, fzf, lazydocker, mise, and ripgrep.
-# Install Ghostty, the remote-access services, and GitHub CLI managed here.
+# Install Ghostty, Docker, remote-access services, and GitHub CLI managed here.
 # Omarchy's Bash and Starship configuration remain the shell defaults.
-sudo pacman -S --needed --noconfirm ghostty github-cli openssh tailscale
+omarchy pkg add docker ghostty github-cli openssh tailscale
 omarchy default terminal ghostty
 sudo systemctl enable sshd.service
+
+# Docker engine — grant socket access and start on boot.
+sudo usermod -aG docker "$USER"
+sudo systemctl enable --now docker
 
 # Use Omarchy's installer to install 1Password and its CLI.
 omarchy-install-service-1password
@@ -62,7 +66,7 @@ curl -fsSL https://ampcode.com/install.sh | env PATH="$HOME/.local/bin:$PATH" ba
 omarchy pkg add herdr
 
 {{ if .is_work -}}
-omarchy pkg add cursor-bin cursor-agent helm yq
+omarchy pkg add cursor-bin cursor-cli helm yq
 {{ end -}}
 
 # Enable Tailscale SSH when this Omarchy machine is already connected to the tailnet.

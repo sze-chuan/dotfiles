@@ -24,21 +24,10 @@ fi
 [[ -f "$XDG_CONFIG_HOME/zsh/work-functions.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/work-functions.zsh"
 {{- end }}
 
-# Reuse one SSH agent across terminals, starting it when necessary.
-_ssh_env="$HOME/.ssh/agent.env"
-_ssh_agent_start() {
-  mkdir -p "$HOME/.ssh"
-  ssh-agent | sed 's/^echo/#echo/' >"$_ssh_env"
-  chmod 600 "$_ssh_env"
-  source "$_ssh_env" >/dev/null
-}
-if [[ -f "$_ssh_env" ]]; then
-  source "$_ssh_env" >/dev/null
-  kill -0 "$SSH_AGENT_PID" 2>/dev/null || _ssh_agent_start
-else
-  _ssh_agent_start
+# Use the 1Password SSH agent when available.
+if [[ -S "$HOME/.1password/agent.sock" ]]; then
+  export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
 fi
-unset _ssh_env
 
 if [[ "$TERM_PROGRAM" == "vscode" ]] && command -v code >/dev/null 2>&1; then
   source "$(code --locate-shell-integration-path bash)"
