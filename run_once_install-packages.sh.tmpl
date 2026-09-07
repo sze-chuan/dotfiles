@@ -39,7 +39,7 @@ brew install \
   yq
 {{ end -}}
 
-curl -fsSL https://herdr.dev/install.sh | sh
+brew install herdr
 
 brew install --cask ghostty
 
@@ -59,7 +59,7 @@ omarchy-install-service-1password
 # Amp installs to ~/.amp/bin and links its executable into ~/.local/bin.
 curl -fsSL https://ampcode.com/install.sh | env PATH="$HOME/.local/bin:$PATH" bash
 
-curl -fsSL https://herdr.dev/install.sh | sh
+omarchy pkg add herdr
 
 {{ if .is_work -}}
 sudo pacman -S --needed --noconfirm helm yq
