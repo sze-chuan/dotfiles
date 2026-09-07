@@ -62,7 +62,7 @@ curl -fsSL https://ampcode.com/install.sh | env PATH="$HOME/.local/bin:$PATH" ba
 omarchy pkg add herdr
 
 {{ if .is_work -}}
-sudo pacman -S --needed --noconfirm helm yq
+omarchy pkg add cursor-bin cursor-agent helm yq
 {{ end -}}
 
 # Enable Tailscale SSH when this Omarchy machine is already connected to the tailnet.

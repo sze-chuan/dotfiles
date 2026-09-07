@@ -26,7 +26,9 @@ profile from the operating system.
 ## Platform rules
 
 - **macOS:** use Homebrew and Zsh.
-- **Omarchy:** use pacman/yay only; do not use Homebrew. Manage
+- **Omarchy:** use `omarchy pkg add` to install packages whenever they are
+  available through Omarchy; fall back to pacman/yay only when they are not.
+  Do not use Homebrew. Manage
   `~/.config/ghostty/config` through chezmoi, preserving its dynamic theme
   `config-file` directive. Keep Bash as the shell and layer user configuration
   after Omarchy's defaults.
