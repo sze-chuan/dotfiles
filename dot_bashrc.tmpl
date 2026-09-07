@@ -27,6 +27,7 @@ fi
 # Reuse one SSH agent across terminals, starting it when necessary.
 _ssh_env="$HOME/.ssh/agent.env"
 _ssh_agent_start() {
+  mkdir -p "$HOME/.ssh"
   ssh-agent | sed 's/^echo/#echo/' >"$_ssh_env"
   chmod 600 "$_ssh_env"
   source "$_ssh_env" >/dev/null

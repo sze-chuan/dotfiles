@@ -43,7 +43,7 @@ curl -fsSL https://herdr.dev/install.sh | sh
 
 brew install --cask ghostty
 
-{{ else if eq .chezmoi.osRelease.id "arch" -}}
+{{ else if or (eq .chezmoi.osRelease.id "arch") (eq .chezmoi.osRelease.id "omarchy") -}}
 # ── Arch Linux (Omarchy) ──────────────────────────────────────────────────────
 
 # Omarchy already installs bat, eza, fzf, lazydocker, mise, and ripgrep.
