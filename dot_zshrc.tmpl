@@ -31,7 +31,11 @@ eval "$(mise activate zsh)"
 [[ -f "$XDG_CONFIG_HOME/zsh/aliases.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/aliases.zsh"
 [[ -f "$XDG_CONFIG_HOME/zsh/functions.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/functions.zsh"
 {{- if .is_work }}
-[[ -f "$HOME/.env" ]] && source "$HOME/.env"
+if [[ -f "$HOME/.env" ]]; then
+  set -a
+  source "$HOME/.env"
+  set +a
+fi
 [[ -f "$XDG_CONFIG_HOME/zsh/work-aliases.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/work-aliases.zsh"
 [[ -f "$XDG_CONFIG_HOME/zsh/work-functions.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/work-functions.zsh"
 {{- end }}

@@ -9,6 +9,7 @@ fi
 alias cls='clear'
 
 # Common tools
+alias agent='cursor-agent'
 alias ld='lazydocker'
 alias sshp='ssh -o PubkeyAuthentication=no'
 

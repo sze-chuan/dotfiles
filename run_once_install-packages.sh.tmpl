@@ -71,7 +71,7 @@ omarchy pkg add cursor-bin cursor-cli helm yq
 
 # Enable Tailscale SSH when this Omarchy machine is already connected to the tailnet.
 if command -v tailscale >/dev/null 2>&1 && tailscale status >/dev/null 2>&1; then
-  tailscale set --ssh
+  sudo tailscale set --ssh
 else
   echo "WARNING: Tailscale is unavailable or not connected; skipping Tailscale SSH." >&2
 fi
