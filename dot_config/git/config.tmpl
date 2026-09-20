@@ -1,18 +1,13 @@
 [user]
 	name = Sze Chuan
-	{{- if .is_work }}
-	email = szechuan.lai@illumina.com
-{{- else }}
 	email = sze.chuan@gmail.com
-{{- end }}
-{{- if .is_work }}
+
+[includeIf "gitdir:~/Work/"]
+	path = ~/.config/git/work
 [credential "https://git.illumina.com"]
 	provider = github
-{{- else }}
-[credential "https://github.com"]
-	helper =
-	helper = !gh auth git-credential
-{{- end }}
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
 [init]
 	defaultBranch = main
 [core]
@@ -57,3 +52,5 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[credential "https://github.com"]
+	helper = !/usr/bin/gh auth git-credential

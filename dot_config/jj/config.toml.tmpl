@@ -1,0 +1,22 @@
+#:schema https://docs.jj-vcs.dev/latest/config-schema.json
+
+[user]
+name = "Sze Chuan"
+email = "sze.chuan@gmail.com"
+
+[[--scope]]
+--when.repositories = ["~/Work"]
+[--scope.user]
+email = "szechuan.lai@illumina.com"
+
+[revset-aliases]
+"trunk()" = "main@origin"
+
+[working-copy]
+eol-conversion = "input"
+
+[ui]
+conflict-marker-style = "git"
+
+[git]
+abandon-unreachable-commits = true
