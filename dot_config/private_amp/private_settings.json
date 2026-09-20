@@ -1,0 +1,10 @@
+{
+  "amp.mcpServers": {
+    "executor": {
+      "command": "executor",
+      "args": [
+        "mcp"
+      ]
+    }
+  }
+}
