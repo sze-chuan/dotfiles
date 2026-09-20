@@ -16,16 +16,16 @@ elif command -v mise >/dev/null 2>&1; then
 fi
 
 # Source custom aliases and functions after Omarchy so local definitions win.
-[[ -f "$XDG_CONFIG_HOME/zsh/aliases.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/aliases.zsh"
-[[ -f "$XDG_CONFIG_HOME/zsh/functions.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/functions.zsh"
+[[ -f "$XDG_CONFIG_HOME/shell/aliases.sh" ]] && source "$XDG_CONFIG_HOME/shell/aliases.sh"
+[[ -f "$XDG_CONFIG_HOME/shell/functions.sh" ]] && source "$XDG_CONFIG_HOME/shell/functions.sh"
 {{- if .is_work }}
 if [[ -f "$HOME/.env" ]]; then
   set -a
   source "$HOME/.env"
   set +a
 fi
-[[ -f "$XDG_CONFIG_HOME/zsh/work-aliases.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/work-aliases.zsh"
-[[ -f "$XDG_CONFIG_HOME/zsh/work-functions.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/work-functions.zsh"
+[[ -f "$XDG_CONFIG_HOME/shell/work-aliases.sh" ]] && source "$XDG_CONFIG_HOME/shell/work-aliases.sh"
+[[ -f "$XDG_CONFIG_HOME/shell/work-functions.sh" ]] && source "$XDG_CONFIG_HOME/shell/work-functions.sh"
 {{- end }}
 
 # Use the 1Password SSH agent when available.

@@ -21,8 +21,8 @@ IMPROVEMENTS.md
 
 # Work-specific files only on work machines
 {{ if not .is_work }}
-.config/zsh/work-aliases.zsh
-.config/zsh/work-functions.zsh
+.config/shell/work-aliases.sh
+.config/shell/work-functions.sh
 .config/agents/skills/acceptance-criteria/**
 .config/agents/skills/create-pr/**
 .config/agents/skills/pr-review/**

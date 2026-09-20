@@ -41,7 +41,7 @@ git add . && git commit -m "..." && git push && chezmoi apply
 | `dot_zshrc.tmpl` | macOS Zsh config |
 | `dot_zshenv` | macOS Zsh environment variables (XDG, ripgrep, fzf) |
 | `dot_zprofile` | macOS login shell PATH |
-| `dot_config/zsh/` | Aliases and functions shared by Bash and Zsh |
+| `dot_config/shell/` | Aliases and functions shared by Bash and Zsh |
 | `dot_config/mise/config.toml` | mise global tool versions |
 | `dot_config/ripgrep/ripgreprc` | macOS ripgrep defaults (smart-case, hidden files) |
 | `dot_config/bat/config` | macOS Bat theme and style |
