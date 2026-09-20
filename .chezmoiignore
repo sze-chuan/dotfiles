@@ -15,6 +15,7 @@ IMPROVEMENTS.md
 # Terminal-tool configuration is macOS-only
 {{ if ne .chezmoi.os "darwin" }}
 .config/bat/**
+.config/herdr/**
 .config/ripgrep/**
 {{ end }}
 
