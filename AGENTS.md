@@ -21,8 +21,8 @@ profile from the operating system.
   `private_dot_env.tmpl` deploys `~/.env` owner-private; never print its
   rendered credentials.
 - Work-only: work zsh aliases/functions, Cursor CLI configuration, and the
-  `acceptance-criteria`, `create-pr`, `illumina-executor`, `pr-review`, and
-  `sprint-summary` skills.
+  `acceptance-criteria`, `create-pr`, `illumina-executor`, `jira-ticket`,
+  `pr-review`, and `sprint-summary` skills.
 - Bundled on all profiles: `raindrop` and `jj`.
 
 ## Platform rules
