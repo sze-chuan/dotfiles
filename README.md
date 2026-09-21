@@ -52,8 +52,8 @@ git add . && git commit -m "..." && git push && chezmoi apply
 
 ## Profiles
 
-Work-specific aliases, functions, and agent skills (except Raindrop) are gated
-in `.chezmoiignore`. `.env` is deployed on all profiles for Raindrop and
+Work-specific aliases, functions, and agent skills (except Raindrop and jj) are
+gated in `.chezmoiignore`. `.env` is deployed on all profiles for Raindrop and
 includes additional credentials only on work profiles.
 
 ## Requirements

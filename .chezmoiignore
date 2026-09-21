@@ -25,6 +25,7 @@ IMPROVEMENTS.md
 .config/shell/work-functions.sh
 .config/agents/skills/acceptance-criteria/**
 .config/agents/skills/create-pr/**
+.config/agents/skills/illumina-executor/**
 .config/agents/skills/pr-review/**
 .config/agents/skills/sprint-summary/**
 .config/amp/settings.json

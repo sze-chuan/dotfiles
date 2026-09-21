@@ -17,11 +17,13 @@ profile from the operating system.
 
 ## Profile boundaries
 
-- Raindrop and `~/.env` apply to both profiles. `private_dot_env.tmpl` deploys
-  `~/.env` owner-private; never print its rendered credentials.
+- Raindrop, the `jj` skill, and `~/.env` apply to both profiles.
+  `private_dot_env.tmpl` deploys `~/.env` owner-private; never print its
+  rendered credentials.
 - Work-only: work zsh aliases/functions, Cursor CLI configuration, and the
-  `acceptance-criteria`, `create-pr`, `pr-review`, and `sprint-summary` skills.
-- `raindrop` is the only bundled personal skill.
+  `acceptance-criteria`, `create-pr`, `illumina-executor`, `pr-review`, and
+  `sprint-summary` skills.
+- Bundled on all profiles: `raindrop` and `jj`.
 
 ## Platform rules
 
