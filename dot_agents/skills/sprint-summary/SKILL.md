@@ -38,7 +38,7 @@ Ask the user for the sprint name (e.g., "26.1.4").
 Run the fetch script and save output to a temp file:
 
 ```bash
-~/.config/agents/skills/sprint-summary/fetch-sprint-issues.sh "<sprint-name>" > /tmp/sprint-issues.json
+~/.agents/skills/sprint-summary/fetch-sprint-issues.sh "<sprint-name>" > /tmp/sprint-issues.json
 ```
 
 If the script fails, check the exit code:
@@ -125,7 +125,7 @@ Ask the user for one or more sprint names to include (e.g., `26.1.2`, `26.1.3`, 
 For each sprint, run the fetch script and save to a numbered temp file:
 
 ```bash
-~/.config/agents/skills/sprint-summary/fetch-sprint-issues.sh "<sprint-name>" > /tmp/sprint-issues-<sprint-name>.json
+~/.agents/skills/sprint-summary/fetch-sprint-issues.sh "<sprint-name>" > /tmp/sprint-issues-<sprint-name>.json
 ```
 
 Use the same error handling as Mode: Summary (S2).
