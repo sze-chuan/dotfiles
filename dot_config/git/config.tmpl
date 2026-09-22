@@ -1,3 +1,11 @@
+{{- $gh := lookPath "gh" -}}
+{{- if not $gh -}}
+{{-   if eq .chezmoi.os "darwin" -}}
+{{-     $gh = "/opt/homebrew/bin/gh" -}}
+{{-   else -}}
+{{-     $gh = "/usr/bin/gh" -}}
+{{-   end -}}
+{{- end -}}
 [user]
 	name = Sze Chuan
 	email = sze.chuan@gmail.com
@@ -7,7 +15,7 @@
 [credential "https://git.illumina.com"]
 	provider = github
 	helper = 
-	helper = !/usr/bin/gh auth git-credential
+	helper = !{{ $gh }} auth git-credential
 [init]
 	defaultBranch = main
 [core]
@@ -53,4 +61,4 @@
 	process = git-lfs filter-process
 	required = true
 [credential "https://github.com"]
-	helper = !/usr/bin/gh auth git-credential
+	helper = !{{ $gh }} auth git-credential
