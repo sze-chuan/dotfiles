@@ -1,9 +1,9 @@
 ---
-name: jira-ticket
-description: Starts Jira ticket work directly in the specified repository, or in a jj workspace for edgeos-ui, and squash-merges PRs with a ticket-prefixed commit message. Use when the user starts a Jira ticket, asks for a workspace, or asks to merge a PR.
+name: start-ticket
+description: Starts Jira ticket work directly in the specified repository, or in a jj workspace for edgeos-ui, and squash-merges PRs with a ticket-prefixed commit message. Use when the user starts a Jira ticket, starts work on a ticket, asks for a workspace, or asks to merge a PR.
 ---
 
-# Jira ticket workflow
+# Start ticket workflow
 
 ## Start work
 

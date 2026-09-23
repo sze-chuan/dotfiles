@@ -26,7 +26,7 @@ IMPROVEMENTS.md
 .agents/skills/acceptance-criteria/**
 .agents/skills/create-pr/**
 .agents/skills/illumina-executor/**
-.agents/skills/jira-ticket/**
+.agents/skills/start-ticket/**
 .agents/skills/pr-review/**
 .agents/skills/sprint-summary/**
 .config/amp/settings.json
