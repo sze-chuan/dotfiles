@@ -9,6 +9,7 @@
 #   go = "latest"
 
 [tools]
+claude = "latest"
 codex = "latest"
 node = "26.7.0"
 # Add global tool versions here
