@@ -14,4 +14,8 @@
 
 [data.artifactory]
   apikey = {{ promptStringOnce . "artifactory_apikey" "Artifactory API key" | quote }}
+
+[data.jama]
+  client_id = {{ promptStringOnce . "jama_client_id" "Jama OAuth client ID" | quote }}
+  client_secret = {{ promptStringOnce . "jama_client_secret" "Jama OAuth client secret" | quote }}
 {{- end }}

@@ -20,9 +20,11 @@ profile from the operating system.
 - Raindrop, the `jj` skill, and `~/.env` apply to both profiles.
   `private_dot_env.tmpl` deploys `~/.env` owner-private; never print its
   rendered credentials.
-- Work-only: work zsh aliases/functions, Cursor CLI configuration, and the
-  `acceptance-criteria`, `create-pr`, `illumina-executor`, `start-ticket`,
-  `pr-review`, and `sprint-summary` skills.
+- Work-only: work zsh aliases/functions, Cursor CLI configuration (`~/.cursor/mcp.json`),
+  Amp settings (`~/.config/amp/settings.json`), and the
+  `acceptance-criteria`, `eos-dev-and-bug-fixing`, `gh-pr-images`,
+  `illumina-executor`, `pull-request`, and
+  `sprint-summary` skills.
 - Bundled on all profiles: `raindrop` and `jj`.
 
 ## Platform rules

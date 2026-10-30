@@ -6,4 +6,7 @@ JIRA_PAT={{ .jira.pat | quote }}
 KUBECONFIG="/etc/rancher/k3s/k3s.yaml"
 ARTIFACTORY_APIKEY={{ .artifactory.apikey | quote }}
 NPM_TOKEN={{ .artifactory.apikey | quote }}
+JAMA_URL="https://illumina.jamacloud.com"
+JAMA_CLIENT_ID={{ .jama.client_id | quote }}
+JAMA_CLIENT_SECRET={{ .jama.client_secret | quote }}
 {{- end }}

@@ -24,10 +24,10 @@ IMPROVEMENTS.md
 .config/shell/work-aliases.sh
 .config/shell/work-functions.sh
 .agents/skills/acceptance-criteria/**
-.agents/skills/create-pr/**
+.agents/skills/eos-dev-and-bug-fixing/**
+.agents/skills/gh-pr-images/**
 .agents/skills/illumina-executor/**
-.agents/skills/start-ticket/**
-.agents/skills/pr-review/**
+.agents/skills/pull-request/**
 .agents/skills/sprint-summary/**
 .config/amp/settings.json
 .cursor/mcp.json
